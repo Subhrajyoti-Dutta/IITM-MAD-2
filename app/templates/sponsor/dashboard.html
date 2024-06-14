@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Sponsor Dashboard</title>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+    </head>
+    <body>
+        <div class="container">
+            <h1>Sponsor Dashboard</h1>
+            <a
+                href="{{ url_for('sponsor.new_campaign') }}"
+                class="btn btn-primary"
+                >Create New Campaign</a
+            >
+            <h2>My Campaigns</h2>
+            <ul>
+                {% for campaign in campaigns %}
+                <li>
+                    {{ campaign.name }} - {{ campaign.budget }}
+                    <a
+                        href="{{ url_for('sponsor.update_campaign', campaign_id=campaign.id) }}"
+                        class="btn btn-secondary"
+                        >Edit</a
+                    >
+                    <form
+                        method="POST"
+                        action="{{ url_for('sponsor.delete_campaign', campaign_id=campaign.id) }}"
+                        style="display: inline"
+                    >
+                        <input
+                            type="submit"
+                            class="btn btn-danger"
+                            value="Delete"
+                        />
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </body>
+</html>

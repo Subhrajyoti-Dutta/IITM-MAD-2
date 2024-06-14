@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Influencer Dashboard</title>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+    </head>
+    <body>
+        <div class="container">
+            <h1>Influencer Dashboard</h1>
+            <a
+                href="{{ url_for('influencer.profile') }}"
+                class="btn btn-primary"
+                >Update Profile</a
+            >
+            <a
+                href="{{ url_for('influencer.search_campaigns') }}"
+                class="btn btn-primary"
+                >Search Campaigns</a
+            >
+            <h2>My Ad Requests</h2>
+            <ul>
+                {% for ad_request in ad_requests %}
+                <li>
+                    Campaign: {{ ad_request.campaign.name }} - Status: {{
+                    ad_request.status }}
+                    <a
+                        href="{{ url_for('influencer.respond_ad_request', ad_request_id=ad_request.id) }}"
+                        class="btn btn-secondary"
+                        >Respond</a
+                    >
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </body>
+</html>
