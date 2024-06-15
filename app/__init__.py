@@ -19,7 +19,6 @@ def create_app():
 
     # Initialize extensions
     db.init_app(app)
-    # db.create_all()
     login_manager.init_app(app)
     bootstrap.init_app(app)
     migrate.init_app(app, db)
@@ -34,10 +33,10 @@ def create_app():
     from app.views.sponsor import sponsor_bp
     from app.views.influencer import influencer_bp
 
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(admin_bp)
-    app.register_blueprint(sponsor_bp)
-    app.register_blueprint(influencer_bp)
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
+    app.register_blueprint(sponsor_bp, url_prefix='/sponsor')
+    app.register_blueprint(influencer_bp, url_prefix='/influencer')
 
     return app
 

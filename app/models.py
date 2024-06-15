@@ -6,8 +6,8 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     role = db.Column(db.String(20), nullable=False)
-    approved = db.Column(db.Boolean, default=False)
-    flagged = db.Column(db.Boolean, default=False)
+    # approved = db.Column(db.Boolean, default=False)
+    # flagged = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.role}')"
@@ -21,7 +21,7 @@ class Campaign(db.Model):
     budget = db.Column(db.Float, nullable=False)
     visibility = db.Column(db.String(10), nullable=False)
     goals = db.Column(db.Text, nullable=True)
-    flagged = db.Column(db.Boolean, default=False)
+    # flagged = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f"Campaign('{self.name}', '{self.budget}')"

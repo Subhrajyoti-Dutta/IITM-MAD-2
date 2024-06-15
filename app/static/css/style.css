@@ -1,0 +1,27 @@
+.btn-outline-danger,
+.btn-outline-primary,
+.btn-outline-warning,
+.btn-outline-secondary {
+    background-color: white;
+    color: inherit;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
