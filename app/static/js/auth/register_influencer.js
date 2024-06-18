@@ -4,24 +4,40 @@ new Vue({
         username: "",
         password: "",
         full_name: "",
-        country_code: "",
-        phone: "",
+        country_code: 0,
+        phone: 0,
         youtubeSelected: false,
         twitterSelected: false,
         instagramSelected: false,
         othersSelected: false,
-    },
-    computed: {
-        selectedPlatforms() {
-            let platforms = [];
-            if (this.youtubeSelected) platforms.push("youtube");
-            if (this.twitterSelected) platforms.push("twitter");
-            if (this.instagramSelected) platforms.push("instagram");
-            if (this.othersSelected) platforms.push("others");
-            return platforms.join(",");
-        },
+        error: "",
     },
     methods: {
+        register() {
+            const data = {
+                username: this.username,
+                password: this.password,
+                full_name: this.full_name,
+                country_code: Number(this.country_code),
+                phone: Number(this.phone),
+                youtube: this.youtubeSelected,
+                twitter: this.twitterSelected,
+                instagram: this.instagramSelected,
+                others: this.othersSelected,
+            };
+            axios
+                .post("/auth/register_influencer", data)
+                .then((response) => {
+                    if (response.data.success) {
+                        window.location.href = response.data.next;
+                    } else {
+                        this.error = response.data.message;
+                    }
+                })
+                .catch((error) => {
+                    this.error = "An error occurred during registration.";
+                });
+        },
         togglePlatform(platform) {
             if (platform === "youtube") {
                 this.youtubeSelected = !this.youtubeSelected;

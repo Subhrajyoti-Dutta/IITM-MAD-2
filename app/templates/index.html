@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Welcome to Our Service</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/index.css') }}"
+        />
+    </head>
+    <body class="bg-gradient">
+        <header class="text-white text-center py-5">
+            <div class="container">
+                <h1>
+                    Welcome to Influencer Engagement & Sponsorship Coordination
+                    Platform
+                </h1>
+                <p class="lead">
+                    Connecting Sponsors with Influencers for Effective Marketing
+                    Campaigns
+                </p>
+            </div>
+        </header>
+
+        <section class="py-5 bg-white text-dark">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2 class="text-center">About Our Service</h2>
+                        <p>
+                            Our platform bridges the gap between sponsors and
+                            influencers, enabling seamless collaboration for
+                            marketing campaigns. Whether you're looking to
+                            promote a product or find the right partnership,
+                            we've got you covered.
+                        </p>
+                        <ul>
+                            <li>
+                                Discover and connect with influencers in various
+                                niches
+                            </li>
+                            <li>Manage and track your campaigns easily</li>
+                            <li>
+                                Ensure transparent and efficient collaboration
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-light py-5 text-dark">
+            <div class="container text-center">
+                <h2>Get Started</h2>
+                <p class="mb-4">
+                    Join our platform today and start your journey towards
+                    effective influencer marketing.
+                </p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a
+                        href="{{ url_for('auth.login') }}"
+                        class="btn btn-primary btn-lg px-4 gap-3"
+                        >Login</a
+                    >
+                    <a
+                        href="{{ url_for('auth.register_influencer') }}"
+                        class="btn btn-outline-secondary btn-lg px-4"
+                        >Register as Influencer</a
+                    >
+                    <a
+                        href="{{ url_for('auth.register_sponsor') }}"
+                        class="btn btn-outline-secondary btn-lg px-4"
+                        >Register as Sponsor</a
+                    >
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-white text-center py-3">
+            <div class="container">
+                <p>
+                    &copy; 2024 Influencer Engagement & Sponsorship Coordination
+                    Platform. All rights reserved.
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

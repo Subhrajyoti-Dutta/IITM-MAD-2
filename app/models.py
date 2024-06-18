@@ -6,11 +6,40 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     role = db.Column(db.String(20), nullable=False)
-    # approved = db.Column(db.Boolean, default=False)
-    # flagged = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.role}')"
+
+
+class Influencer(db.Model):
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    full_name = db.Column(db.String(150))
+    country_code = db.Column(db.Integer)
+    phone = db.Column(db.Integer)
+    niche = db.Column(db.String(150), default="Others")
+    reach = db.Column(db.Integer, default=0)
+    bio = db.Column(db.Text, default="-Blank-")
+    youtube = db.Column(db.Boolean, default=False)
+    twitter = db.Column(db.Boolean, default=False)
+    instagram = db.Column(db.Boolean, default=False)
+    others = db.Column(db.Boolean, default=False)
+
+    def to_dict(self):
+        return {
+            'ID': self.id,
+            'Full Name': self.full_name,
+            'Country Code': self.country_code,
+            'Phone': self.phone,
+            'Niche': self.niche,
+            'Reach': self.reach,
+            'Platform' : {
+                'Youtube': self.youtube,
+                'Twitter': self.twitter,
+                'Instagram': self.instagram,
+                'Others': self.others
+            },
+            'Bio': self.bio,
+        }
 
 class Campaign(db.Model):
     id = db.Column(db.Integer, primary_key=True)

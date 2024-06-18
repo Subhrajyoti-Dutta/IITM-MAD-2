@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
@@ -32,12 +33,20 @@ def create_app():
     from app.views.admin import admin_bp
     from app.views.sponsor import sponsor_bp
     from app.views.influencer import influencer_bp
+    from app.views import main_bp
 
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(sponsor_bp, url_prefix='/sponsor')
     app.register_blueprint(influencer_bp, url_prefix='/influencer')
+    app.register_blueprint(main_bp)
 
+    from app.api.influencer import InfluencerListAPI, InfluencerAPI
+
+    api = Api(app)
+    api.add_resource(InfluencerListAPI, '/influencer_api/influencers')
+    api.add_resource(InfluencerAPI, '/influencer_api/influencer/<int:influencer_id>')
+    
     return app
 
 # User loader callback

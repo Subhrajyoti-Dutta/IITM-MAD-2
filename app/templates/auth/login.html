@@ -11,13 +11,15 @@
             rel="stylesheet"
             href="{{ url_for('static', filename='css/style.css') }}"
         />
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/auth/login.css') }}"
+        />
     </head>
     <body>
         <div
             id="app"
-            class="d-flex justify-content-center align-items-center vh-100"
+            class="d-flex justify-content-center align-items-center vh-100 bg-gradient"
         >
             <div class="card p-4 shadow-lg" style="width: 400px">
                 <div class="card-body">
@@ -66,7 +68,7 @@
                         </button>
                         <a
                             href="{{ url_for('auth.register_sponsor') }}"
-                            class="btn btn-secondary w-100 mb-2"
+                            class="btn btn-secondary w-100 mb-3"
                             >Register as Sponsor</a
                         >
                         <a
@@ -81,6 +83,8 @@
                 </div>
             </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="{{ url_for('static', filename='js/auth/login.js') }}"></script>
     </body>
 </html>

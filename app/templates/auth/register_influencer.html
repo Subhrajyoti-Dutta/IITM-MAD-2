@@ -11,80 +11,88 @@
             rel="stylesheet"
             href="{{ url_for('static', filename='css/style.css') }}"
         />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/auth/register_influencer.css') }}"
+        />
     </head>
-    <body>
-        <div id="app" class="container mt-5">
-            <div class="card">
+    <body class="bg-gradient">
+        <div
+            id="app"
+            class="d-flex justify-content-center align-items-center vh-100"
+        >
+            <div class="card p-4 shadow-lg">
                 <div class="card-body">
-                    <h1 class="card-title text-center">
+                    <h1 class="card-title text-center mb-4">
                         Register as Influencer
                     </h1>
-                    <form
-                        method="post"
-                        action="{{ url_for('auth.register_influencer') }}"
-                    >
-                        <div class="mb-3">
-                            <label for="username" class="form-label"
-                                >Username</label
-                            >
-                            <input
-                                type="text"
-                                id="username"
-                                name="username"
-                                v-model="username"
-                                class="form-control"
-                                required
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label"
-                                >Password</label
-                            >
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                v-model="password"
-                                class="form-control"
-                                required
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label for="full_name" class="form-label"
-                                >Full Name</label
-                            >
-                            <input
-                                type="text"
-                                id="full_name"
-                                name="full_name"
-                                v-model="full_name"
-                                class="form-control"
-                                required
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label"
-                                >Phone Number</label
-                            >
-                            <div class="input-group">
-                                <span class="input-group-text">+</span>
+                    <form @submit.prevent="register">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="username" class="form-label"
+                                    >Username</label
+                                >
                                 <input
                                     type="text"
-                                    id="country_code"
-                                    name="country_code"
-                                    v-model="country_code"
+                                    id="username"
+                                    name="username"
+                                    v-model="username"
                                     class="form-control"
-                                    placeholder="Code"
-                                    style="max-width: 100px"
+                                    required
                                 />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="password" class="form-label"
+                                    >Password</label
+                                >
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    v-model="password"
+                                    class="form-control"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="full_name" class="form-label"
+                                    >Full Name</label
+                                >
                                 <input
                                     type="text"
-                                    id="phone"
-                                    name="phone"
-                                    v-model="phone"
+                                    id="full_name"
+                                    name="full_name"
+                                    v-model="full_name"
                                     class="form-control"
-                                    placeholder="Phone Number"
+                                    required
                                 />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label"
+                                    >Phone Number</label
+                                >
+                                <div class="input-group">
+                                    <span class="input-group-text">+</span>
+                                    <input
+                                        type="text"
+                                        id="country_code"
+                                        name="country_code"
+                                        v-model="country_code"
+                                        class="form-control"
+                                        placeholder="Code"
+                                        style="max-width: 100px"
+                                    />
+                                    <input
+                                        type="text"
+                                        id="phone"
+                                        name="phone"
+                                        v-model="phone"
+                                        class="form-control"
+                                        placeholder="Phone Number"
+                                    />
+                                </div>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -137,14 +145,23 @@
                             name="platforms"
                             :value="selectedPlatforms"
                         />
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100 mb-3"
+                        >
                             Register
                         </button>
+                        <a
+                            href="{{ url_for('auth.login') }}"
+                            class="btn btn-secondary w-100"
+                            >Go to Login</a
+                        >
                     </form>
                 </div>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="{{ url_for('static', filename='js/auth/register_influencer.js') }}"></script>
     </body>
 </html>

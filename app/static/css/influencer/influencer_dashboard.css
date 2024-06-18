@@ -1,0 +1,11 @@
+body {
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: white;
+}
+.card {
+    background-color: #fff;
+    color: #000;
+}
+.profile-section img {
+    max-width: 100px;
+}
