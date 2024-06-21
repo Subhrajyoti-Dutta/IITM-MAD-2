@@ -7,10 +7,6 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     role = db.Column(db.String(20), nullable=False)
 
-    def __repr__(self):
-        return f"User('{self.username}', '{self.role}')"
-
-
 class Influencer(db.Model):
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     full_name = db.Column(db.String(150))
@@ -41,6 +37,30 @@ class Influencer(db.Model):
             'Bio': self.bio,
         }
 
+class Sponsor(db.Model):
+    __tablename__ = 'sponsors'
+    
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    full_name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    country_code = db.Column(db.String(10), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    company = db.Column(db.String(100), nullable=False)
+    budget = db.Column(db.Float, nullable=False)
+    industry = db.Column(db.String(100), nullable=False)
+
+    def to_dict(self):
+        return {
+            'ID': self.id,
+            'Full Name': self.full_name,
+            'Email': self.email,
+            'Country Code': self.country_code,
+            'Phone': self.phone,
+            'Company': self.company,
+            'Budget': self.budget,
+            'Industry': self.industry,
+        }
+
 class Campaign(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -50,7 +70,6 @@ class Campaign(db.Model):
     budget = db.Column(db.Float, nullable=False)
     visibility = db.Column(db.String(10), nullable=False)
     goals = db.Column(db.Text, nullable=True)
-    # flagged = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f"Campaign('{self.name}', '{self.budget}')"

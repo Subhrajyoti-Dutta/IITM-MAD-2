@@ -42,10 +42,13 @@ def create_app():
     app.register_blueprint(main_bp)
 
     from app.api.influencer import InfluencerListAPI, InfluencerAPI
+    from app.api.sponsor import SponsorAPI, SponsorListAPI
 
     api = Api(app)
-    api.add_resource(InfluencerListAPI, '/influencer_api/influencers')
-    api.add_resource(InfluencerAPI, '/influencer_api/influencer/<int:influencer_id>')
+    api.add_resource(InfluencerListAPI, '/api/influencer_api/influencers')
+    api.add_resource(InfluencerAPI, '/api/influencer_api/influencer/<int:influencer_id>')
+    api.add_resource(SponsorListAPI, '/api/sponsor_api/sponsors')
+    api.add_resource(SponsorAPI,'/api/sponsor_api/sponsor/<int:sponsor_id>')
     
     return app
 
