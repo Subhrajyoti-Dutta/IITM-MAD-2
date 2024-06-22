@@ -7,6 +7,13 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     role = db.Column(db.String(20), nullable=False)
 
+    def to_dict(self):
+        return {
+            'ID': self.id,
+            'Username': self.username,
+            'Role': self.role
+        }
+
 class Influencer(db.Model):
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     full_name = db.Column(db.String(150))
@@ -46,7 +53,6 @@ class Sponsor(db.Model):
     country_code = db.Column(db.String(10), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     company = db.Column(db.String(100), nullable=False)
-    budget = db.Column(db.Float, nullable=False)
     industry = db.Column(db.String(100), nullable=False)
 
     def to_dict(self):
@@ -57,7 +63,6 @@ class Sponsor(db.Model):
             'Country Code': self.country_code,
             'Phone': self.phone,
             'Company': self.company,
-            'Budget': self.budget,
             'Industry': self.industry,
         }
 
@@ -68,11 +73,16 @@ class Campaign(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     budget = db.Column(db.Float, nullable=False)
-    visibility = db.Column(db.String(10), nullable=False)
-    goals = db.Column(db.Text, nullable=True)
 
-    def __repr__(self):
-        return f"Campaign('{self.name}', '{self.budget}')"
+    def to_dict(self):
+        return {
+            'ID': self.id,
+            'Name': self.name,
+            'Description': self.description,
+            'Start Date': self.start_date.isoformat(),
+            'End Date': self.end_date.isoformat(),
+            'Budget': self.budget,
+        }
 
 class AdRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -83,5 +93,13 @@ class AdRequest(db.Model):
     payment_amount = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(20), nullable=False)
 
-    def __repr__(self):
-        return f"AdRequest('{self.campaign_id}', '{self.influencer_id}', '{self.status}')"
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'campaign_id': self.campaign_id,
+            'influencer_id': self.influencer_id,
+            'messages': self.messages,
+            'requirements': self.requirements,
+            'payment_amount': self.payment_amount,
+            'status': self.status,
+        }
