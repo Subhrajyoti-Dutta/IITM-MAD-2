@@ -3,6 +3,7 @@ from flask_restful import Resource, Api, abort
 from app.models import db, Campaign
 import random
 from datetime import datetime
+from app.api.sponsor import abort_if_sponsor_doesnt_exist
 
 campaign_blueprint = Blueprint('campaigns', __name__)
 api = Api(campaign_blueprint)
@@ -36,13 +37,13 @@ class CampaignAPI(Resource):
         campaign.budget = data.get('Budget', campaign.budget)
 
         db.session.commit()
-        return jsonify(campaign.to_dict())
+        return campaign.to_dict()
 
     def post(self):
         data = request.get_json()
         if not data:
             abort(400, message="No input data provided")
-
+        abort_if_sponsor_doesnt_exist(data.get('Sponsor_ID'))
         # Generate a unique ID
         while True:
             new_id = random.randint(1, 2**31 - 1)

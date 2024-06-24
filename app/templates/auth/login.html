@@ -67,14 +67,14 @@
                             Login
                         </button>
                         <a
-                            href="{{ url_for('auth.register_sponsor') }}"
+                            href="{{ url_for('auth.register_influencer') }}"
                             class="btn btn-secondary w-100 mb-3"
-                            >Register as Sponsor</a
+                            >Register as Influencer</a
                         >
                         <a
-                            href="{{ url_for('auth.register_influencer') }}"
+                            href="{{ url_for('auth.register_sponsor') }}"
                             class="btn btn-secondary w-100"
-                            >Register as Influencer</a
+                            >Register as Sponsor</a
                         >
                     </form>
                     <p v-if="error" class="text-danger text-center mt-3">

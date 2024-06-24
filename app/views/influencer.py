@@ -9,7 +9,7 @@ influencer_bp = Blueprint('influencer', __name__)
 @influencer_bp.route('/dashboard', methods=['GET'])
 @login_required
 def dashboard():
-    if current_user.role != 'influencer':
+    if current_user.__class__ != Influencer:
         return redirect(url_for('main.index'))
     
     return render_template('influencer/dashboard.html')
@@ -17,7 +17,7 @@ def dashboard():
 @influencer_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    if current_user.role != 'influencer':
+    if current_user.__class__ != Influencer:
         return redirect(url_for('main.index'))
 
     return render_template('influencer/profile.html')
@@ -25,7 +25,7 @@ def profile():
 @influencer_bp.route('/find_campaign')
 @login_required
 def find_campaign():
-    if current_user.role != 'influencer':
+    if current_user.__class__ != Influencer:
         return redirect(url_for('main.index'))
 
     return render_template('influencer/find_campaign.html')
@@ -33,7 +33,7 @@ def find_campaign():
 @influencer_bp.route('/stats', methods=['GET', 'POST'])
 @login_required
 def stats():
-    if current_user.role != 'influencer':
+    if current_user.__class__ != Influencer:
         return redirect(url_for('main.index'))
 
     return render_template('influencer/stats.html')

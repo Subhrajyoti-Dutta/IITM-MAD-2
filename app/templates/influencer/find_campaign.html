@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Influencer Dashboard</title>
+        <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/influencer/influencer_dashboard.css') }}"
+        />
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">INFLUENCER DASHBOARD</a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('influencer.dashboard')}}"
+                                >HOME</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('influencer.profile')}}"
+                                >PROFILE</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('influencer.find_campaign')}}"
+                                >FIND</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('influencer.stats')}}"
+                                >STATS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('auth.logout')}}"
+                                >LOGOUT</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="app" class="container mt-5">
+            <div v-if="loading" class="text-center">Loading...</div>
+            <div v-if="!loading">
+                <div class="row">
+                    <div class="col-3">
+                        <div>
+                            <img
+                                src="{{ url_for('static', filename='img/path_to_profile_picture.webp') }}"
+                                alt="Profile Picture"
+                                class="img-fluid rounded-circle mb-3"
+                            />
+                        </div>
+                        <div>
+                            <p><strong>ID:</strong> ${ id }</p>
+                            <p><strong>Username:</strong> ${ username }</p>
+                            <p><strong>Rating:</strong> ${ averageRating }</p>
+                            <p>
+                                <strong>Earnings:</strong> $${
+                                totalEarnings.toFixed(2) }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="mb-3 input-group">
+                            <input
+                                type="text"
+                                v-model="searchQuery"
+                                class="form-control"
+                                placeholder="Search campaigns by name"
+                                @input="filterCampaigns"
+                            />
+                            <div class="input-group-append">
+                                <button
+                                    class="btn btn-success"
+                                    @click="filterCampaigns"
+                                >
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <select
+                                    v-model="selectedSponsor"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                >
+                                    <option value="">All Sponsors</option>
+                                    <option
+                                        v-for="sponsor in sponsors"
+                                        :key="sponsor.id"
+                                        :value="sponsor.id"
+                                    >
+                                        ${ sponsor.id }
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <select
+                                    v-model="selectedStatus"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                >
+                                    <option value="all">All Statuses</option>
+                                    <option value="active">Active</option>
+                                    <option value="rejected">Rejected</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="NULL">Null</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <input
+                                    type="date"
+                                    v-model="startDate"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                />
+                            </div>
+                            <div class="col">
+                                <input
+                                    type="date"
+                                    v-model="endDate"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                />
+                            </div>
+                        </div>
+                        <div
+                            v-for="campaign in filteredCampaigns"
+                            :key="campaign.id"
+                            class="card mb-3"
+                        >
+                            <div class="card-body">
+                                <h5 class="card-title">${ campaign.name }</h5>
+                                <p class="card-text">
+                                    ${ campaign.description }
+                                </p>
+                                <p class="card-text">
+                                    <small class="text-muted"
+                                        >${ campaign.start_date } - ${
+                                        campaign.end_date }</small
+                                    >
+                                </p>
+                                <a
+                                    :href="'/campaign/' + campaign.id"
+                                    class="btn btn-primary"
+                                    >View Campaign</a
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="{{ url_for('static', filename='js/influencer/find_campaign.js') }}"></script>
+    </body>
+</html>

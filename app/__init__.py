@@ -49,9 +49,9 @@ def create_app():
     api = Api(app)
     api.add_resource(InfluencerListAPI,     '/api/influencer_api/influencers')
     api.add_resource(InfluencerAPI,         '/api/influencer_api/influencer', '/api/influencer_api/influencer/<int:influencer_id>')
-    api.add_resource(InfluAdAPI, '/api/influencer_api/influencer/<int:influencer_id>/campaign/<status>', '/api/influencer_api/influencer/<int:influencer_id>/campaign')
+    api.add_resource(InfluAdAPI,            '/api/influencer_api/influencer/<int:influencer_id>/campaign/<status>', '/api/influencer_api/influencer/<int:influencer_id>/campaigns')
     api.add_resource(SponsorListAPI,        '/api/sponsor_api/sponsors')
-    api.add_resource(SponsorAPI,'/api/sponsor_api/sponsor/<int:sponsor_id>')
+    api.add_resource(SponsorAPI,'/api/sponsor_api/sponsor', '/api/sponsor_api/sponsor/<int:sponsor_id>')
     api.add_resource(CampaignAPI, '/api/campaign_api/campaign/<int:campaign_id>', '/api/campaign_api/campaign')
     api.add_resource(CampaignListAPI, '/api/campaign_api/campaigns')
     api.add_resource(AdRequestAPI, '/api/campaign_api/campaign/<int:campaign_id>/adrequest/<int:ad_id>', '/api/campaign_api/campaign/<int:campaign_id>/adrequest')
@@ -62,8 +62,17 @@ def create_app():
 # User loader callback
 @login_manager.user_loader
 def load_user(user_id):
-    from app.models import User
-    return User.query.get(int(user_id))
+    from app.models import Sponsor, Influencer
+    
+    # If not found, attempt to load the user from the Sponsor model
+    sponsor = Sponsor.query.get(int(user_id))
+    if sponsor:
+        return sponsor
+    
+    # If not found, attempt to load the user from the Influencer model
+    influencer = Influencer.query.get(int(user_id))
+    if influencer:
+        return influencer
 
 # Celery configuration
 def make_celery(app):

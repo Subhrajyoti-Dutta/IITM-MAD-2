@@ -13,9 +13,8 @@ new Vue({
     methods: {
         fetchData() {
             axios
-                .get("/api/influencer_api/influencer/1947380509")
+                .get(`/api/influencer_api/influencer/${this.id}`)
                 .then((response) => {
-                    this.id = response.data["ID"];
                     this.username = response.data["Username"];
                     this.loading = false;
                 })
@@ -27,7 +26,7 @@ new Vue({
         fetchAds(status) {
             return axios
                 .get(
-                    `/api/influencer_api/influencer/1947380509/campaign/${status}`
+                    `/api/influencer_api/influencer/${this.id}/campaign/${status}`
                 )
                 .then((response) => {
                     console.log(response.data);
@@ -46,7 +45,7 @@ new Vue({
                 .put(
                     `/api/campaign_api/campaign/${campaignId}/adrequest/${adRequestID}`,
                     {
-                        status: "active",
+                        Status: "active",
                     }
                 ) // Replace with actual endpoint
                 .then((response) => {
@@ -62,9 +61,14 @@ new Vue({
                     console.error("Error accepting campaign:", error);
                 });
         },
-        rejectCampaign(campaignId) {
+        rejectCampaign(campaignId, adRequestID) {
             axios
-                .post(`/api/influencer_api/campaign/${campaignId}/reject`) // Replace with actual endpoint
+                .put(
+                    `/api/campaign_api/campaign/${campaignId}/adrequest/${adRequestID}`,
+                    {
+                        Status: "reject",
+                    }
+                ) // Replace with actual endpoint
                 .then((response) => {
                     console.log("Campaign rejected:", response);
                     this.fetchAds("NULL").then((data) => {
@@ -77,6 +81,7 @@ new Vue({
         },
     },
     created() {
+        this.id = localStorage.getItem("id");
         this.fetchData();
         this.fetchAds("active").then((data) => {
             this.activeCampaigns = data;

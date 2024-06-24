@@ -1,7 +1,7 @@
 from app import db
 from flask_login import UserMixin
 
-class Influencer(db.Model):
+class Influencer(db.Model, UserMixin):
     influencer_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
@@ -16,9 +16,12 @@ class Influencer(db.Model):
     instagram = db.Column(db.Boolean, default=False)
     others = db.Column(db.Boolean, default=False)
 
+    def get_id(self):
+        return self.influencer_id
+    
     def to_dict(self):
         return {
-            'Influencer_ID': self.id,
+            'Influencer_ID': self.influencer_id,
             'Username': self.username,
             'Full_Name': self.full_name,
             'Country_Code': self.country_code,
@@ -34,7 +37,7 @@ class Influencer(db.Model):
             'Bio': self.bio,
         }
 
-class Sponsor(db.Model):
+class Sponsor(db.Model, UserMixin):
     sponsor_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
@@ -44,12 +47,14 @@ class Sponsor(db.Model):
     company = db.Column(db.String(100), nullable=False)
     industry = db.Column(db.String(100), nullable=False)
 
+    def get_id(self):
+        return self.sponsor_id
+    
     def to_dict(self):
         return {
             'Sponsor_ID': self.sponsor_id,
             'Username': self.username,
             'Full_Name': self.full_name,
-            'Email': self.email,
             'Country_Code': self.country_code,
             'Phone': self.phone,
             'Company': self.company,
@@ -67,7 +72,7 @@ class Campaign(db.Model):
 
     def to_dict(self):
         return {
-            'Campaign_ID': self.id,
+            'Campaign_ID': self.campaign_id,
             'Name': self.name,
             'Sponsor_ID': self.sponsor_id,
             'Description': self.description,
@@ -77,7 +82,7 @@ class Campaign(db.Model):
         }
 
 class AdRequest(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    ad_id = db.Column(db.Integer, primary_key=True)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.campaign_id'), nullable=False)
     influencer_id = db.Column(db.Integer, db.ForeignKey('influencer.influencer_id'), nullable=False)
     messages = db.Column(db.Text, nullable=True)
@@ -87,7 +92,7 @@ class AdRequest(db.Model):
 
     def to_dict(self):
         return {
-            'Ad_ID': self.id,
+            'Ad_ID': self.ad_id,
             'Campaign_ID': self.campaign_id,
             'Name': Campaign.query.get(self.campaign_id).name,
             'Influencer_ID': self.influencer_id,

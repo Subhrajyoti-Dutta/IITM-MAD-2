@@ -16,6 +16,7 @@ new Vue({
                 })
                 .then((response) => {
                     if (response.data.success) {
+                        localStorage.setItem("id", response.data.id);
                         window.location.href = response.data.next || "/";
                     } else {
                         this.error = response.data.message;

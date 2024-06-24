@@ -9,12 +9,12 @@ auth_bp = Blueprint('auth', __name__)
 def login():
     if request.method == 'GET':
         if current_user.is_authenticated:
-            if current_user.role == 'influencer':
-                return redirect(url_for('influencer.influencer_dashboard'))
-            elif current_user.role == 'sponsor':
+            if current_user.__class__ == Influencer:
+                return redirect(url_for('influencer.dashboard'))
+            elif current_user.__class__ == Sponsor:
                 return redirect(url_for('sponsor.dashboard'))
-            elif current_user.role == 'admin':
-                return redirect(url_for('admin.dashboard'))
+            # elif current_user.__class__ == Admin:
+            #     return redirect(url_for('admin.dashboard'))
         return render_template('auth/login.html')
 
     if request.method == 'POST':
@@ -23,16 +23,24 @@ def login():
         password = data.get('password')
         remember = data.get('remember', False)
 
-        user = User.query.filter_by(username=username).first()
+        user = Influencer.query.filter_by(username=username).first()
 
         if user and user.password == password:
             login_user(user, remember=remember)
-            if user.role == 'influencer':
-                return jsonify(success=True, next=url_for('influencer.dashboard'))
-            elif user.role == 'sponsor':
-                return jsonify(success=True, next=url_for('sponsor.dashboard'))
-            elif user.role == 'admin':
-                return jsonify(success=True, next=url_for('admin.dashboard'))
+            return jsonify(success=True, next=url_for('influencer.dashboard'), id=user.influencer_id)
+            
+        user = Sponsor.query.filter_by(username=username).first()
+
+        if user and user.password == password:
+            login_user(user, remember=remember)
+            return jsonify(success=True, next=url_for('sponsor.dashboard'))
+        
+        # user = Admin.query.filter_by(username=username).first()
+
+        # if user and user.password == password:
+        #     login_user(user, remember=remember)
+        #     return jsonify(success=True, next=url_for('admin.dashboard'))
+        
         return jsonify(success=False, message='Invalid username or password')
 
 

@@ -12,7 +12,6 @@ def abort_if_not_enough_budget(budget, campaign_id):
         abort(404, "Not enough Budget")
     else:
         campaign.budget -= budget
-        db.session.commit()
         return campaign.budget
 
 def abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id=None):
@@ -20,20 +19,21 @@ def abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id=None):
     if not campaign:
         abort(404, message=f"Campaign {campaign_id} doesn't exist")
     if ad_id is not None:
-        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, id=ad_id).first()
+        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, ad_id=ad_id).first()
         if not ad_request:
             abort(404, message=f"AdRequest {ad_id} in Campaign {campaign_id} doesn't exist")
 
 class AdRequestAPI(Resource):
     def get(self, campaign_id, ad_id):
         abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id)
-        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, id=ad_id).first()
+        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, ad_id=ad_id).first()
         return ad_request.to_dict()
 
     def put(self, campaign_id, ad_id):
         abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id)
-        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, id=ad_id).first()
+        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, ad_id=ad_id).first()
         data = request.get_json()
+        print(data)
         new_budget = abort_if_not_enough_budget(
             data.get('Payment_Amount', ad_request.payment_amount) - ad_request.payment_amount,
             campaign_id
@@ -46,7 +46,7 @@ class AdRequestAPI(Resource):
 
         db.session.commit()
         res = ad_request.to_dict()
-        res["Budget"] = new_budget
+        res["New Budget"] = new_budget
         return res, 201
 
     def post(self, campaign_id):
@@ -58,10 +58,10 @@ class AdRequestAPI(Resource):
         )
         while True:
             new_id = random.randint(1, 2**31 - 1)
-            if not AdRequest.query.filter_by(campaign_id=campaign_id, id=new_id).first():
+            if not AdRequest.query.filter_by(campaign_id=campaign_id, ad_id=new_id).first():
                 break
         new_ad_request = AdRequest(
-            id=new_id,
+            ad_id=new_id,
             campaign_id=campaign_id,
             influencer_id=data.get('Influencer_ID'),
             messages=data.get('Messages'),
@@ -72,12 +72,12 @@ class AdRequestAPI(Resource):
         db.session.add(new_ad_request)
         db.session.commit()
         res = new_ad_request.to_dict()
-        res["Budget"] = new_budget
+        res["New Budget"] = new_budget
         return res, 201
 
     def delete(self, campaign_id, ad_id):
         abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id)
-        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, id=ad_id).first()
+        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, ad_id=ad_id).first()
         db.session.delete(ad_request)
         db.session.commit()
         return "Success", 204
