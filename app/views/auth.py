@@ -28,7 +28,7 @@ def login():
         if user and user.password == password:
             login_user(user, remember=remember)
             if user.role == 'influencer':
-                return jsonify(success=True, next=url_for('influencer.influencer_dashboard'))
+                return jsonify(success=True, next=url_for('influencer.dashboard'))
             elif user.role == 'sponsor':
                 return jsonify(success=True, next=url_for('sponsor.dashboard'))
             elif user.role == 'admin':

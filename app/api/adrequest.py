@@ -3,8 +3,17 @@ from flask_restful import Resource, Api
 from app.models import db, AdRequest, Campaign
 import random
 
-ad_request_blueprint = Blueprint('ad_requests', __name__)
-api = Api(ad_request_blueprint)
+adrequest_bp = Blueprint('adrequests', __name__)
+api = Api(adrequest_bp)
+
+def abort_if_not_enough_budget(budget, campaign_id):
+    campaign = Campaign.query.get(campaign_id)
+    if budget > campaign.budget:
+        abort(404, "Not enough Budget")
+    else:
+        campaign.budget -= budget
+        db.session.commit()
+        return campaign.budget
 
 def abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id=None):
     campaign = Campaign.query.get(campaign_id)
@@ -18,53 +27,63 @@ def abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id=None):
 class AdRequestAPI(Resource):
     def get(self, campaign_id, ad_id):
         abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id)
-        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, id=ad_id).first_or_404()
-        return jsonify(ad_request.to_dict())
+        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, id=ad_id).first()
+        return ad_request.to_dict()
 
     def put(self, campaign_id, ad_id):
         abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id)
-        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, id=ad_id).first_or_404()
+        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, id=ad_id).first()
         data = request.get_json()
-
-        ad_request.influencer_id = data.get('influencer_id', ad_request.influencer_id)
-        ad_request.messages = data.get('messages', ad_request.messages)
-        ad_request.requirements = data.get('requirements', ad_request.requirements)
-        ad_request.payment_amount = data.get('payment_amount', ad_request.payment_amount)
-        ad_request.status = data.get('status', ad_request.status)
+        new_budget = abort_if_not_enough_budget(
+            data.get('Payment_Amount', ad_request.payment_amount) - ad_request.payment_amount,
+            campaign_id
+        )
+        ad_request.influencer_id = data.get('Influencer_ID', ad_request.influencer_id)
+        ad_request.messages = data.get('Messages', ad_request.messages)
+        ad_request.requirements = data.get('Requirements', ad_request.requirements)
+        ad_request.payment_amount = data.get('Payment_Amount', ad_request.payment_amount)
+        ad_request.status = data.get('Status', ad_request.status)
 
         db.session.commit()
-        return jsonify(ad_request.to_dict())
+        res = ad_request.to_dict()
+        res["Budget"] = new_budget
+        return res, 201
 
     def post(self, campaign_id):
         abort_if_campaign_or_ad_doesnt_exist(campaign_id)
         data = request.get_json()
+        new_budget = abort_if_not_enough_budget(
+            data.get('Payment_Amount'),
+            campaign_id
+        )
         while True:
             new_id = random.randint(1, 2**31 - 1)
-            if not Campaign.query.get(new_id):
+            if not AdRequest.query.filter_by(campaign_id=campaign_id, id=new_id).first():
                 break
         new_ad_request = AdRequest(
-            id = new_id,
+            id=new_id,
             campaign_id=campaign_id,
-            influencer_id=data.get('influencer_id'),
-            messages=data.get('messages'),
-            requirements=data.get('requirements'),
-            payment_amount=data.get('payment_amount'),
-            status=data.get('status')
+            influencer_id=data.get('Influencer_ID'),
+            messages=data.get('Messages'),
+            requirements=data.get('Requirements'),
+            payment_amount=data.get('Payment_Amount'),
+            status="NULL"
         )
         db.session.add(new_ad_request)
         db.session.commit()
-        return jsonify(new_ad_request.to_dict()), 201
+        res = new_ad_request.to_dict()
+        res["Budget"] = new_budget
+        return res, 201
 
     def delete(self, campaign_id, ad_id):
         abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id)
-        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, id=ad_id).first_or_404()
+        ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, id=ad_id).first()
         db.session.delete(ad_request)
         db.session.commit()
-        return '', 204
+        return "Success", 204
 
 class AdRequestListAPI(Resource):
     def get(self, campaign_id):
         abort_if_campaign_or_ad_doesnt_exist(campaign_id)
         ad_requests = AdRequest.query.filter_by(campaign_id=campaign_id).all()
         return jsonify([ad_request.to_dict() for ad_request in ad_requests])
-

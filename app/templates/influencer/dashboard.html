@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Influencer Data</title>
+        <title>Influencer Dashboard</title>
         <link
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
             rel="stylesheet"
@@ -69,6 +69,82 @@
                 </div>
             </div>
         </nav>
+        <div id="app" class="container mt-5">
+            <div v-if="loading" class="text-center">Loading...</div>
+            <div v-if="!loading">
+                <div class="row">
+                    <div class="col-3">
+                        <div>
+                            <img
+                                src="{{ url_for('static', filename='img/path_to_profile_picture.webp') }}"
+                                alt="Profile Picture"
+                                class="img-fluid rounded-circle mb-3"
+                            />
+                        </div>
+                        <div>
+                            <p><strong>ID:</strong> ${ id }</p>
+                            <p><strong>Username:</strong> ${ username }</p>
+                            <p><strong>Rating:</strong> ${ averageRating }</p>
+                            <p>
+                                <strong>Earnings:</strong> $${
+                                totalEarnings.toFixed(2) }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="card mb-3">
+                            <div class="card-header">Active Campaigns</div>
+                            <div class="card-body">
+                                <div
+                                    v-for="campaign in activeCampaigns"
+                                    :key="campaign.id"
+                                    class="d-flex justify-content-between align-items-center mb-2"
+                                >
+                                    <span>${ campaign.Name }</span>
+                                    <button
+                                        class="btn btn-primary"
+                                        @click="viewCampaign(campaign.id)"
+                                    >
+                                        View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">New Campaigns</div>
+                            <div class="card-body">
+                                <div
+                                    v-for="campaign in newCampaigns"
+                                    class="d-flex justify-content-between align-items-center mb-2"
+                                >
+                                    <span>${ campaign.Name }</span>
+                                    <div>
+                                        <button
+                                            class="btn btn-info mr-2"
+                                            @click="viewCampaign(campaign.ID, campaign['Influencer ID'])"
+                                        >
+                                            View
+                                        </button>
+                                        <button
+                                            class="btn btn-success mr-2"
+                                            @click="acceptCampaign(campaign.ID, campaign['Influencer ID'])"
+                                        >
+                                            Accept
+                                        </button>
+                                        <button
+                                            class="btn btn-danger"
+                                            @click="rejectCampaign(campaign.id)"
+                                        >
+                                            Reject
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

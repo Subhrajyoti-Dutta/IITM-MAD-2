@@ -3,76 +3,86 @@ new Vue({
     delimiters: ["${", "}"],
     data: {
         id: 0,
-        influencerData: {},
-        editValues: {},
-        editMode: false,
+        username: "",
+        averageRating: 0,
+        totalEarnings: 0,
         loading: true,
-        presence: {},
-    },
-    computed: {
-        averageRating() {
-            if (!this.influencerData.campaigns) return 0;
-            const totalRating = this.influencerData.campaigns.reduce(
-                (acc, campaign) => acc + campaign.rating,
-                0
-            );
-            return (totalRating / this.influencerData.campaigns.length).toFixed(
-                2
-            );
-        },
-        totalEarnings() {
-            if (!this.influencerData.campaigns) return 0;
-            return this.influencerData.campaigns.reduce(
-                (acc, campaign) => acc + campaign.earnings,
-                0
-            );
-        },
+        activeCampaigns: [],
+        newCampaigns: [],
     },
     methods: {
-        enableEdit() {
-            this.editValues = { ...this.influencerData };
-            this.editMode = true;
-        },
-        saveChanges() {
-            this.influencerData = { ...this.editValues };
-            this.editMode = false;
+        fetchData() {
             axios
-                .put(
-                    "/influencer_api/influencer/1947380509",
-                    this.influencerData
-                )
+                .get("/api/influencer_api/influencer/1947380509")
                 .then((response) => {
-                    console.log("Data updated successfully");
+                    this.id = response.data["ID"];
+                    this.username = response.data["Username"];
+                    this.loading = false;
                 })
                 .catch((error) => {
-                    console.error("Error updating data:", error);
+                    console.error("Error fetching data:", error);
+                    this.loading = false;
                 });
         },
-        cancelEdit() {
-            this.editMode = false;
-            this.editValues = {};
+        fetchAds(status) {
+            return axios
+                .get(
+                    `/api/influencer_api/influencer/1947380509/campaign/${status}`
+                )
+                .then((response) => {
+                    console.log(response.data);
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.error(`Error fetching ${status} ads:`, error);
+                    return [];
+                });
         },
-        togglePlatform(platform) {
-            this.editValues["Platform"][platform] =
-                !this.editValues["Platform"][platform];
+        viewCampaign(campaignId) {
+            window.location.href = `/campaign/${campaignId}`; // Replace with actual URL structure
+        },
+        acceptCampaign(campaignId, adRequestID) {
+            axios
+                .put(
+                    `/api/campaign_api/campaign/${campaignId}/adrequest/${adRequestID}`,
+                    {
+                        status: "active",
+                    }
+                ) // Replace with actual endpoint
+                .then((response) => {
+                    console.log("Campaign accepted:", response);
+                    this.fetchAds("NULL").then((data) => {
+                        this.newCampaigns = data;
+                    });
+                    this.fetchAds("active").then((data) => {
+                        this.activeCampaigns = data;
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error accepting campaign:", error);
+                });
+        },
+        rejectCampaign(campaignId) {
+            axios
+                .post(`/api/influencer_api/campaign/${campaignId}/reject`) // Replace with actual endpoint
+                .then((response) => {
+                    console.log("Campaign rejected:", response);
+                    this.fetchAds("NULL").then((data) => {
+                        this.newCampaigns = data;
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error rejecting campaign:", error);
+                });
         },
     },
-
     created() {
-        console.log("Vue instance is created");
-        axios
-            .get("/influencer_api/influencer/1947380509")
-            .then((response) => {
-                this.id = response.data["ID"];
-                delete response.data["ID"];
-                this.presence = response.data["Platform Presence"];
-                delete response.data["Platform Presence"];
-                this.influencerData = response.data;
-                this.loading = false;
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-                this.loading = false;
-            });
+        this.fetchData();
+        this.fetchAds("active").then((data) => {
+            this.activeCampaigns = data;
+        });
+        this.fetchAds("NULL").then((data) => {
+            this.newCampaigns = data;
+        });
     },
 });

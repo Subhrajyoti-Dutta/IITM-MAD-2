@@ -3,6 +3,7 @@ new Vue({
     delimiters: ["${", "}"],
     data: {
         id: 0,
+        username: "",
         influencerData: {},
         editValues: {},
         editMode: false,
@@ -38,7 +39,7 @@ new Vue({
             this.editMode = false;
             axios
                 .put(
-                    "/influencer_api/influencer/1947380509",
+                    "/api/influencer_api/influencer/1947380509",
                     this.influencerData
                 )
                 .then((response) => {
@@ -61,10 +62,12 @@ new Vue({
     created() {
         console.log("Vue instance is created");
         axios
-            .get("/influencer_api/influencer/1947380509")
+            .get("/api/influencer_api/influencer/1947380509")
             .then((response) => {
                 this.id = response.data["ID"];
                 delete response.data["ID"];
+                this.username = response.data["Username"];
+                delete response.data["Username"];
                 this.presence = response.data["Platform Presence"];
                 delete response.data["Platform Presence"];
                 this.influencerData = response.data;
