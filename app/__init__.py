@@ -45,6 +45,7 @@ def create_app():
     from app.api.sponsor import SponsorAPI, SponsorListAPI
     from app.api.campaign import CampaignAPI, CampaignListAPI
     from app.api.adrequest import AdRequestAPI, AdRequestListAPI
+    from app.api.adperformance import AdPerformanceAPI
 
     api = Api(app)
     api.add_resource(InfluencerListAPI,     '/api/influencer_api/influencers')
@@ -56,6 +57,7 @@ def create_app():
     api.add_resource(CampaignListAPI, '/api/campaign_api/campaigns')
     api.add_resource(AdRequestAPI, '/api/campaign_api/campaign/<int:campaign_id>/adrequest/<int:ad_id>', '/api/campaign_api/campaign/<int:campaign_id>/adrequest')
     api.add_resource(AdRequestListAPI, '/api/campaign_api/campaign/<int:campaign_id>/adrequests')
+    api.add_resource(AdPerformanceAPI, '/api/campaign_api/campaign/<int:campaign_id>/adrequest/<int:ad_id>/performance')
 
     return app
 

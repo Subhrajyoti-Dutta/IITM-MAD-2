@@ -101,3 +101,19 @@ class AdRequest(db.Model):
             'Payment_Amount': self.payment_amount,
             'Status': self.status,
         }
+
+class AdPerformance(db.Model):
+    ad_id = db.Column(db.Integer, db.ForeignKey('ad_request.ad_id'), primary_key=True)
+    reach = db.Column(db.Integer, nullable=False)
+    posts = db.Column(db.Integer, nullable=False)
+    likes = db.Column(db.Integer, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+
+    def to_dict(self):
+        return {
+            'Ad_ID': self.ad_id,
+            'Reach': self.reach,
+            'Posts': self.posts,
+            'Likes': self.likes,
+            'Rating': self.rating,
+        }

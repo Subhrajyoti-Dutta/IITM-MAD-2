@@ -30,22 +30,35 @@ class AdRequestAPI(Resource):
         return ad_request.to_dict()
 
     def put(self, campaign_id, ad_id):
+        print("Voila")
         abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id)
+        print("Voila2")
         ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, ad_id=ad_id).first()
+        print("Voila3")
         data = request.get_json()
+        print("Voila4")
         print(data)
+        print("Voila5")
         new_budget = abort_if_not_enough_budget(
             data.get('Payment_Amount', ad_request.payment_amount) - ad_request.payment_amount,
             campaign_id
         )
+        print("Voila6")
         ad_request.influencer_id = data.get('Influencer_ID', ad_request.influencer_id)
+        print("Voila7")
         ad_request.messages = data.get('Messages', ad_request.messages)
+        print("Voila8")
         ad_request.requirements = data.get('Requirements', ad_request.requirements)
+        print("Voila9")
         ad_request.payment_amount = data.get('Payment_Amount', ad_request.payment_amount)
+        print("Voila10")
         ad_request.status = data.get('Status', ad_request.status)
+        print("Voila11")
 
         db.session.commit()
+        print("Voila12")
         res = ad_request.to_dict()
+        print("Voila13")
         res["New Budget"] = new_budget
         return res, 201
 
@@ -67,7 +80,7 @@ class AdRequestAPI(Resource):
             messages=data.get('Messages'),
             requirements=data.get('Requirements'),
             payment_amount=data.get('Payment_Amount'),
-            status="NULL"
+            status="Null"
         )
         db.session.add(new_ad_request)
         db.session.commit()

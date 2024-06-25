@@ -45,15 +45,15 @@ new Vue({
                 .put(
                     `/api/campaign_api/campaign/${campaignId}/adrequest/${adRequestID}`,
                     {
-                        Status: "active",
+                        Status: "Active",
                     }
                 ) // Replace with actual endpoint
                 .then((response) => {
                     console.log("Campaign accepted:", response);
-                    this.fetchAds("NULL").then((data) => {
+                    this.fetchAds("Null").then((data) => {
                         this.newCampaigns = data;
                     });
-                    this.fetchAds("active").then((data) => {
+                    this.fetchAds("Active").then((data) => {
                         this.activeCampaigns = data;
                     });
                 })
@@ -66,12 +66,12 @@ new Vue({
                 .put(
                     `/api/campaign_api/campaign/${campaignId}/adrequest/${adRequestID}`,
                     {
-                        Status: "reject",
+                        Status: "Reject",
                     }
                 ) // Replace with actual endpoint
                 .then((response) => {
                     console.log("Campaign rejected:", response);
-                    this.fetchAds("NULL").then((data) => {
+                    this.fetchAds("Null").then((data) => {
                         this.newCampaigns = data;
                     });
                 })
@@ -86,7 +86,7 @@ new Vue({
         this.fetchAds("active").then((data) => {
             this.activeCampaigns = data;
         });
-        this.fetchAds("NULL").then((data) => {
+        this.fetchAds("null").then((data) => {
             this.newCampaigns = data;
         });
     },

@@ -96,8 +96,8 @@ class InfluencerAPI(Resource):
 class InfluAdAPI(Resource):
     def get(self, influencer_id, status="all"):
         if status == "all":
-            ad_requests = AdRequest.query.filter_by(influencer_id=influencer_id).all()
-            return jsonify([ad_request.to_dict() for ad_request in ad_requests])
+            ad_requests = db.session.query(AdRequest, Campaign).join(Campaign).filter(AdRequest.influencer_id==influencer_id).all()
+            return jsonify([{**ad.to_dict(), **camp.to_dict()} for (ad, camp) in ad_requests])
         else:
-            ad_requests = AdRequest.query.filter_by(influencer_id=influencer_id, status=status).all()
-            return jsonify([ad_request.to_dict() for ad_request in ad_requests])
+            ad_requests = db.session.query(AdRequest, Campaign).join(Campaign).filter(AdRequest.influencer_id==influencer_id).filter(AdRequest.status==status.capitalize()).all()
+            return jsonify([{**ad.to_dict(), **camp.to_dict()} for (ad, camp) in ad_requests])
