@@ -39,7 +39,7 @@ new Vue({
             this.editMode = false;
             axios
                 .put(
-                    "/api/influencer_api/influencer/1947380509",
+                    `/api/influencer_api/influencer/${this.id}`,
                     this.influencerData
                 )
                 .then((response) => {
@@ -60,12 +60,11 @@ new Vue({
     },
 
     created() {
-        console.log("Vue instance is created");
+        this.id = localStorage.getItem("id");
+        console.log(this.id);
         axios
-            .get("/api/influencer_api/influencer/1947380509")
+            .get(`/api/influencer_api/influencer/${this.id}`)
             .then((response) => {
-                this.id = response.data["ID"];
-                delete response.data["ID"];
                 this.username = response.data["Username"];
                 delete response.data["Username"];
                 this.presence = response.data["Platform Presence"];
@@ -77,5 +76,9 @@ new Vue({
                 console.error("Error fetching data:", error);
                 this.loading = false;
             });
+        console.log(this.id);
+    },
+    mounted() {
+        console.log(this.id);
     },
 });

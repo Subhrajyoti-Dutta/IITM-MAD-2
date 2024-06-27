@@ -51,8 +51,15 @@
                         <li class="nav-item">
                             <a
                                 class="nav-link"
+                                href="{{ url_for('influencer.sponsors')}}"
+                                >SPONSORS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
                                 href="{{ url_for('influencer.find_campaign')}}"
-                                >FIND</a
+                                >CAMPAIGNS</a
                             >
                         </li>
                         <li class="nav-item">
@@ -86,63 +93,151 @@
                             />
                         </div>
                         <div>
-                            <p><strong>ID:</strong> ${ id }</p>
-                            <p><strong>Username:</strong> ${ username }</p>
-                            <p><strong>Rating:</strong> ${ averageRating }</p>
-                            <p>
+                            <p class="text-white">
+                                <strong>ID:</strong> ${ id }
+                            </p>
+                            <p class="text-white">
+                                <strong>Username:</strong> ${ username }
+                            </p>
+                            <p class="text-white">
+                                <strong>Rating:</strong> ${ averageRating }
+                            </p>
+                            <p class="text-white">
                                 <strong>Earnings:</strong> $${
                                 totalEarnings.toFixed(2) }
                             </p>
                         </div>
                     </div>
                     <div class="col-9">
-                        <div class="card mb-3">
-                            <div class="card-header">Active Campaigns</div>
-                            <div class="card-body">
-                                <div
-                                    v-for="campaign in activeCampaigns"
-                                    :key="campaign.id"
-                                    class="d-flex justify-content-between align-items-center mb-2"
+                        <h3>Active Campaigns</h3>
+                        <ul class="list-group mb-3">
+                            <li
+                                v-for="campaign in activeCampaigns"
+                                :key="campaign.id"
+                                class="list-group-item d-flex justify-content-between align-items-center"
+                            >
+                                <span class="text-black"
+                                    >${ campaign.Name }</span
                                 >
-                                    <span>${ campaign.Name }</span>
+                                <button
+                                    class="btn btn-primary"
+                                    @click="viewCampaign(campaign)"
+                                >
+                                    View
+                                </button>
+                            </li>
+                        </ul>
+                        <h3>New Campaigns</h3>
+                        <ul class="list-group">
+                            <li
+                                v-for="campaign in newCampaigns"
+                                :key="campaign.Campaign_ID"
+                                class="list-group-item d-flex justify-content-between align-items-center"
+                            >
+                                <span>${ campaign.Name }</span>
+                                <div>
                                     <button
-                                        class="btn btn-primary"
-                                        @click="viewCampaign(campaign.id)"
+                                        class="btn btn-info mr-2"
+                                        @click="viewCampaign(campaign)"
                                     >
                                         View
                                     </button>
+                                    <button
+                                        class="btn btn-success mr-2"
+                                        @click="acceptCampaign(campaign.Campaign_ID, campaign.Ad_ID)"
+                                    >
+                                        Accept
+                                    </button>
+                                    <button
+                                        class="btn btn-danger"
+                                        @click="rejectCampaign(campaign.Campaign_ID, campaign.Ad_ID)"
+                                    >
+                                        Reject
+                                    </button>
                                 </div>
-                            </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="modal fade"
+                id="campaignModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="campaignModalLabel"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5
+                                class="modal-title modal-text"
+                                id="campaignModalLabel"
+                            >
+                                <strong>${ modalCampaign.Name }</strong>
+                                <small>${ modalCampaign.Ad_ID }</small>
+                            </h5>
                         </div>
-                        <div class="card">
-                            <div class="card-header">New Campaigns</div>
-                            <div class="card-body">
-                                <div
-                                    v-for="campaign in newCampaigns"
-                                    class="d-flex justify-content-between align-items-center mb-2"
-                                >
-                                    <span>${ campaign.Name }</span>
-                                    <div>
-                                        <button
-                                            class="btn btn-info mr-2"
-                                            @click="viewCampaign(campaign.Campaign_ID, campaign.Ad_ID)"
-                                        >
-                                            View
-                                        </button>
-                                        <button
-                                            class="btn btn-success mr-2"
-                                            @click="acceptCampaign(campaign.Campaign_ID, campaign.Ad_ID)"
-                                        >
-                                            Accept
-                                        </button>
-                                        <button
-                                            class="btn btn-danger"
-                                            @click="rejectCampaign(campaign.Campaign_ID, campaign.Ad_ID)"
-                                        >
-                                            Reject
-                                        </button>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-2 modal-text">
+                                        <b>Campaign ID:</b>
+                                        ${modalCampaign.Campaign_ID}
+                                    </div>
+                                    <div class="mb-2 modal-text">
+                                        <b>Sponsor ID:</b>
+                                        ${modalCampaign.Sponsor_ID}
+                                    </div>
+                                    <div class="mb-2 modal-text">
+                                        <b>Description:</b>
+                                        ${modalCampaign.Description}
+                                    </div>
+                                    <div class="mb-2 modal-text">
+                                        <b>Messages:</b>
+                                        ${modalCampaign.Messages}
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="mb-2 modal-text">
+                                        <b>Requirements:</b>
+                                        ${modalCampaign.Requirements}
+                                    </div>
+                                    <div class="mb-2 modal-text">
+                                        <b>Payment Amount:</b>
+                                        ${modalCampaign.Payment_Amount}
+                                    </div>
+                                    <div class="mb-2 modal-text">
+                                        <b>Dates:</b>
+                                        ${modalCampaign.Start_Date} to
+                                        ${modalCampaign.End_Date}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer pb-0 pr-0">
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-dismiss="modal"
+                                >
+                                    Close
+                                </button>
+                                <button
+                                    v-if="modalCampaign.Status === 'Null'"
+                                    @click="acceptCampaign(modalCampaign.Campaign_ID,modalCampaign.Ad_ID)"
+                                    class="btn btn-success"
+                                >
+                                    Accept
+                                </button>
+                                <button
+                                    v-if="modalCampaign.Status === 'Null'"
+                                    @click="rejectCampaign(modalCampaign.Campaign_ID,modalCampaign.Ad_ID)"
+                                    class="btn btn-danger"
+                                >
+                                    Reject
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -152,6 +247,9 @@
 
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="{{ url_for('static', filename='js/influencer/influencer_dashboard.js') }}"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+        <script src="{{ url_for('static', filename='js/influencer/dashboard.js') }}"></script>
     </body>
 </html>

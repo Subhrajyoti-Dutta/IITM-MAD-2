@@ -33,7 +33,7 @@ def login():
 
         if user and user.password == password:
             login_user(user, remember=remember)
-            return jsonify(success=True, next=url_for('sponsor.dashboard'))
+            return jsonify(success=True, next=url_for('sponsor.dashboard'), id=user.sponsor_id)
         
         # user = Admin.query.filter_by(username=username).first()
 
@@ -53,6 +53,7 @@ def logout():
 @auth_bp.route('/register_sponsor', methods=['GET', 'POST'])
 def register_sponsor():
     if request.method == 'GET':
+        logout_user()
         return render_template('auth/register_sponsor.html')
     
     if request.method == 'POST':
@@ -61,65 +62,13 @@ def register_sponsor():
         company_name = request.form.get('company_name')
         industry = request.form.get('industry')
         hashed_password = generate_password_hash(password, method='sha256')
-        user = User(username=username, password=hashed_password, role='Sponsor')
+        user = Influencer(username=username, password=hashed_password, role='Sponsor')
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created! You can now log in', 'success')
         return redirect(url_for('auth.login'))
 
-@auth_bp.route('/register_influencer', methods=['GET', 'POST'])
+@auth_bp.route('/register_influencer')
 def register_influencer():
-    if request.method == 'POST':
-        if request.is_json:
-            print("Log 1")
-            data = request.get_json()
-            username = data.get('username')
-            password = data.get('password')
-            full_name = data.get('full_name')
-            country_code = data.get('country_code')
-            phone = data.get('phone')
-            youtube = data.get('youtube', False)
-            twitter = data.get('twitter', False)
-            instagram = data.get('instagram', False)
-            others = data.get('others', False)
-            print("Log 2")
-
-            # Generate a unique ID using numpy random.randint with dtype=np.int64
-            while True:
-                new_id = random.randint(1, 2**31 - 1)
-                if not User.query.get(new_id):
-                    break
-
-            # Create a new User instance
-            new_user = User(id=new_id, username=username, password=password, role='influencer')
-            
-            print("Log 3")
-            # Create a new Influencer instance
-            new_influencer = Influencer(
-                id=new_user.id,
-                full_name=full_name,
-                country_code=country_code,
-                phone=phone,
-                youtube=youtube,
-                twitter=twitter,
-                instagram=instagram,
-                others=others
-            )
-            
-            # Add the new user and influencer to the session and commit
-            print("Log 4")
-            db.session.add(new_user)
-            print(dir(new_user))
-            print("Hello")
-            db.session.commit()
-            print("Hello2")
-            db.session.add(new_influencer)
-            print("Hello3")
-            db.session.commit()
-            print("Hello4")
-
-            return jsonify(success=True, message='Registration successful', next=url_for('auth.login'))
-        else:
-            return jsonify(success=False, message='Request must be JSON'), 415
-    
+    logout_user()
     return render_template('auth/register_influencer.html')

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_restful import Resource, Api, abort
 # from app import db
-from app.models import db, Sponsor
+from app.models import *
 import random
 
 sponsor_blueprint = Blueprint('sponsors', __name__)
@@ -76,3 +76,12 @@ class SponsorAPI(Resource):
         db.session.delete(sponsor)
         db.session.commit()
         return {'result': True}
+    
+class SponAdAPI(Resource):
+    def get(self, sponsor_id, status="all"):
+        if status == "all":
+            ad_requests = db.session.query(AdRequest, Campaign).join(Campaign).filter(Campaign.sponsor_id==sponsor_id).all()
+            return jsonify([{**ad.to_dict(), **camp.to_dict()} for (ad, camp) in ad_requests])
+        else:
+            ad_requests = db.session.query(AdRequest, Campaign).join(Campaign).filter(Campaign.sponsor_id==sponsor_id).filter(AdRequest.status==status.capitalize()).all()
+            return jsonify([{**ad.to_dict(), **camp.to_dict()} for (ad, camp) in ad_requests])

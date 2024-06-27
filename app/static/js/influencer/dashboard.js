@@ -9,6 +9,7 @@ new Vue({
         loading: true,
         activeCampaigns: [],
         newCampaigns: [],
+        modalCampaign: {},
     },
     methods: {
         fetchData() {
@@ -37,8 +38,9 @@ new Vue({
                     return [];
                 });
         },
-        viewCampaign(campaignId) {
-            window.location.href = `/campaign/${campaignId}`; // Replace with actual URL structure
+        viewCampaign(campaign) {
+            this.modalCampaign = campaign;
+            $("#campaignModal").modal("show");
         },
         acceptCampaign(campaignId, adRequestID) {
             axios
@@ -50,10 +52,10 @@ new Vue({
                 ) // Replace with actual endpoint
                 .then((response) => {
                     console.log("Campaign accepted:", response);
-                    this.fetchAds("Null").then((data) => {
+                    this.fetchAds("null").then((data) => {
                         this.newCampaigns = data;
                     });
-                    this.fetchAds("Active").then((data) => {
+                    this.fetchAds("active").then((data) => {
                         this.activeCampaigns = data;
                     });
                 })
@@ -71,7 +73,7 @@ new Vue({
                 ) // Replace with actual endpoint
                 .then((response) => {
                     console.log("Campaign rejected:", response);
-                    this.fetchAds("Null").then((data) => {
+                    this.fetchAds("null").then((data) => {
                         this.newCampaigns = data;
                     });
                 })

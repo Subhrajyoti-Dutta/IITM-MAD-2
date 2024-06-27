@@ -51,8 +51,15 @@
                         <li class="nav-item">
                             <a
                                 class="nav-link"
+                                href="{{ url_for('influencer.sponsors')}}"
+                                >SPONSORS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
                                 href="{{ url_for('influencer.find_campaign')}}"
-                                >FIND</a
+                                >CAMPAIGNS</a
                             >
                         </li>
                         <li class="nav-item">
@@ -90,7 +97,7 @@
                             <p><strong>Username:</strong> ${ username }</p>
                             <p><strong>Rating:</strong> ${ averageRating }</p>
                             <p>
-                                <strong>Earnings:</strong> $${
+                                <strong>Earnings:</strong> ${
                                 totalEarnings.toFixed(2) }
                             </p>
                         </div>
@@ -104,13 +111,13 @@
                             >
                                 <div
                                     class="col-3 mb-2"
-                                    v-if="key !== 'Country Code' && key !== 'Phone' && key !== 'Platform'"
+                                    v-if="key !== 'Country_Code' && key !== 'Phone' && key !== 'Platform'"
                                 >
-                                    <strong>${ key }</strong>
+                                    <strong>${ key.replace("_"," ") }</strong>
                                 </div>
                                 <div
                                     class="col-6 mb-2"
-                                    v-if="key !== 'Country Code' && key !== 'Phone' && key !== 'Platform'"
+                                    v-if="key !== 'Country_Code' && key !== 'Phone' && key !== 'Platform'"
                                 >
                                     <span v-if="!editMode">${ value }</span>
                                     <input
@@ -121,17 +128,17 @@
                                 </div>
                                 <div
                                     class="col-3 mb-2"
-                                    v-if="key == 'Country Code' && key !== 'Phone'"
+                                    v-if="key == 'Country_Code' && key !== 'Phone'"
                                 >
                                     <strong> Phone Number </strong>
                                 </div>
                                 <div
                                     class="col-6 mb-2"
-                                    v-if="key == 'Country Code' && key !== 'Phone'"
+                                    v-if="key == 'Country_Code' && key !== 'Phone'"
                                 >
                                     <span v-if="!editMode"
-                                        >+${ influencerData["Country Code"] } ${
-                                        influencerData["Phone"] }</span
+                                        >+${ influencerData.Country_Code } ${
+                                        influencerData.Phone }</span
                                     >
                                     <div v-else class="input-group">
                                         <span class="input-group-text">+</span>
@@ -152,7 +159,7 @@
                                     <strong>Platform Presence</strong>
                                 </div>
                                 <div class="col-9">
-                                    <div class="row mb-2">
+                                    <div class="row">
                                         <div
                                             v-if="!editMode"
                                             class="col-6 mb-2"
@@ -244,7 +251,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-3 text-center">
+                            <div class="text-center">
                                 <button
                                     v-if="!editMode"
                                     class="btn btn-primary"

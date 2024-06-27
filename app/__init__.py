@@ -42,7 +42,7 @@ def create_app():
     app.register_blueprint(main_bp)
 
     from app.api.influencer import InfluencerListAPI, InfluencerAPI, InfluAdAPI
-    from app.api.sponsor import SponsorAPI, SponsorListAPI
+    from app.api.sponsor import SponsorAPI, SponsorListAPI, SponAdAPI
     from app.api.campaign import CampaignAPI, CampaignListAPI
     from app.api.adrequest import AdRequestAPI, AdRequestListAPI
     from app.api.adperformance import AdPerformanceAPI
@@ -52,12 +52,13 @@ def create_app():
     api.add_resource(InfluencerAPI,         '/api/influencer_api/influencer', '/api/influencer_api/influencer/<int:influencer_id>')
     api.add_resource(InfluAdAPI,            '/api/influencer_api/influencer/<int:influencer_id>/campaign/<status>', '/api/influencer_api/influencer/<int:influencer_id>/campaigns')
     api.add_resource(SponsorListAPI,        '/api/sponsor_api/sponsors')
-    api.add_resource(SponsorAPI,'/api/sponsor_api/sponsor', '/api/sponsor_api/sponsor/<int:sponsor_id>')
-    api.add_resource(CampaignAPI, '/api/campaign_api/campaign/<int:campaign_id>', '/api/campaign_api/campaign')
-    api.add_resource(CampaignListAPI, '/api/campaign_api/campaigns')
-    api.add_resource(AdRequestAPI, '/api/campaign_api/campaign/<int:campaign_id>/adrequest/<int:ad_id>', '/api/campaign_api/campaign/<int:campaign_id>/adrequest')
-    api.add_resource(AdRequestListAPI, '/api/campaign_api/campaign/<int:campaign_id>/adrequests')
-    api.add_resource(AdPerformanceAPI, '/api/campaign_api/campaign/<int:campaign_id>/adrequest/<int:ad_id>/performance')
+    api.add_resource(SponsorAPI,            '/api/sponsor_api/sponsor', '/api/sponsor_api/sponsor/<int:sponsor_id>')
+    api.add_resource(SponAdAPI,             '/api/sponsor_api/sponsor/<int:sponsor_id>/campaign/<status>', '/api/sponsor_api/sponsor/<int:sponsor_id>/campaigns')
+    api.add_resource(CampaignAPI,           '/api/campaign_api/campaign/<int:campaign_id>', '/api/campaign_api/campaign')
+    api.add_resource(CampaignListAPI,       '/api/campaign_api/campaigns')
+    api.add_resource(AdRequestAPI,          '/api/campaign_api/campaign/<int:campaign_id>/adrequest/<int:ad_id>', '/api/campaign_api/campaign/<int:campaign_id>/adrequest')
+    api.add_resource(AdRequestListAPI,      '/api/campaign_api/campaign/<int:campaign_id>/adrequests')
+    api.add_resource(AdPerformanceAPI,      '/api/campaign_api/campaign/<int:campaign_id>/adrequest/<int:ad_id>/performance')
 
     return app
 

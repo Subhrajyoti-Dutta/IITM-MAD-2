@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Influencer Dashboard</title>
+        <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/influencer/stats.css') }}"
+        />
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">INFLUENCER DASHBOARD</a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('influencer.dashboard')}}"
+                                >HOME</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('influencer.profile')}}"
+                                >PROFILE</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('influencer.sponsors')}}"
+                                >SPONSORS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('influencer.find_campaign')}}"
+                                >CAMPAIGNS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('influencer.stats')}}"
+                                >STATS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('auth.logout')}}"
+                                >LOGOUT</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="app" class="container mt-5">
+            <div v-if="loading" class="text-center">Loading...</div>
+            <div v-if="!loading">
+                <div class="row">
+                    <div class="col-3">
+                        <div>
+                            <img
+                                src="{{ url_for('static', filename='img/path_to_profile_picture.webp') }}"
+                                alt="Profile Picture"
+                                class="img-fluid profile-image"
+                            />
+                        </div>
+                        <div>
+                            <p class="text-white">
+                                <strong>ID:</strong> ${ id }
+                            </p>
+                            <p class="text-white">
+                                <strong>Username:</strong> ${ username }
+                            </p>
+                            <p class="text-white">
+                                <strong>Rating:</strong> ${ averageRating }
+                            </p>
+                            <p class="text-white">
+                                <strong>Earnings:</strong> $${
+                                totalEarnings.toFixed(2) }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="stats-container">
+                            <div class="stat-card">
+                                <h5>Performance Statistics</h5>
+                                <p>
+                                    <strong>Total Campaigns:</strong> ${
+                                    totalCampaigns }
+                                </p>
+                                <p>
+                                    <strong>Active Campaigns:</strong> ${
+                                    activeCampaigns }
+                                </p>
+                                <p>
+                                    <strong>Completed Campaigns:</strong> ${
+                                    completedCampaigns }
+                                </p>
+                                <p>
+                                    <strong>Rejected Campaigns:</strong> ${
+                                    rejectedCampaigns }
+                                </p>
+                            </div>
+                            <div class="stat-card">
+                                <h5>Engagement Statistics</h5>
+                                <p>
+                                    <strong>Total Reach:</strong> ${ totalReach
+                                    }
+                                </p>
+                                <p>
+                                    <strong>Total Posts:</strong> ${ totalPosts
+                                    }
+                                </p>
+                                <p>
+                                    <strong>Total Likes:</strong> ${ totalLikes
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+        <script src="{{ url_for('static', filename='js/influencer/stats.js') }}"></script>
+    </body>
+</html>

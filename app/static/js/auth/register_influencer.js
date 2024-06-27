@@ -15,21 +15,23 @@ new Vue({
     methods: {
         register() {
             const data = {
-                username: this.username,
-                password: this.password,
-                full_name: this.full_name,
-                country_code: Number(this.country_code),
-                phone: Number(this.phone),
-                youtube: this.youtubeSelected,
-                twitter: this.twitterSelected,
-                instagram: this.instagramSelected,
-                others: this.othersSelected,
+                Username: this.username,
+                Password: this.password,
+                Full_Name: this.full_name,
+                Country_Code: Number(this.country_code),
+                Phone: Number(this.phone),
+                Platform: {
+                    Youtube: this.youtubeSelected,
+                    Twitter: this.twitterSelected,
+                    Instagram: this.instagramSelected,
+                    Others: this.othersSelected,
+                },
             };
             axios
-                .post("/auth/register_influencer", data)
+                .post("/api/influencer_api/influencer", data)
                 .then((response) => {
-                    if (response.data.success) {
-                        window.location.href = response.data.next;
+                    if (response.data.Influencer_ID != undefined) {
+                        window.location.href = "/auth/login";
                     } else {
                         this.error = response.data.message;
                     }

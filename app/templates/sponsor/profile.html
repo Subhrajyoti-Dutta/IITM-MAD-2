@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sponsor Profile</title>
+        <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/sponsor/profile.css') }}"
+        />
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">SPONSOR DASHBOARD</a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('sponsor.dashboard')}}"
+                                >HOME</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('sponsor.profile')}}"
+                                >PROFILE</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('sponsor.influencers')}}"
+                                >INFLUENCERS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('sponsor.campaigns')}}"
+                                >CAMPAIGNS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('sponsor.stats')}}"
+                                >STATS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('auth.logout')}}"
+                                >LOGOUT</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="app" class="container mt-5">
+            <div v-if="loading" class="text-center">Loading...</div>
+            <div v-if="!loading">
+                <div class="row">
+                    <div class="col-3">
+                        <div>
+                            <img
+                                src="{{ url_for('static', filename='img/path_to_profile_picture.webp') }}"
+                                alt="Profile Picture"
+                                class="img-fluid rounded-circle mb-3"
+                            />
+                        </div>
+                        <div>
+                            <p class="text-white">
+                                <strong>ID:</strong> ${ id }
+                            </p>
+                            <p class="text-white">
+                                <strong>Username:</strong> ${ username }
+                            </p>
+                            <p class="text-white">
+                                <strong>Company:</strong> ${ company }
+                            </p>
+                            <p class="text-white">
+                                <strong>Budget:</strong> $${ budget.toFixed(2) }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="card p-3 shadow-lg">
+                            <div
+                                v-for="(value, key) in sponsorData"
+                                :key="key"
+                                class="row"
+                            >
+                                <div
+                                    class="col-3 mb-2 align-self-center"
+                                    v-if="key !== 'Country_Code' && key !== 'Phone' && key !== 'Industry'"
+                                >
+                                    <strong class="align-self-center"
+                                        >${ key.replace("_"," ") }</strong
+                                    >
+                                </div>
+                                <div
+                                    class="col-6 mb-2 align-self-center"
+                                    v-if="key != 'Country_Code' && key !== 'Phone' && key !== 'Industry'"
+                                >
+                                    <span
+                                        v-if="!editMode"
+                                        class="align-self-center"
+                                        >${ value }</span
+                                    >
+                                    <input
+                                        v-else
+                                        v-model="editValues[key]"
+                                        class="form-control"
+                                    />
+                                </div>
+                                <div
+                                    class="col-3 mb-2 align-self-center"
+                                    v-if="key == 'Country_Code' && key !== 'Phone'"
+                                >
+                                    <strong> Phone Number </strong>
+                                </div>
+                                <div
+                                    class="col-6 mb-2"
+                                    v-if="key == 'Country_Code' && key !== 'Phone'"
+                                >
+                                    <span
+                                        v-if="!editMode"
+                                        class="align-self-center"
+                                        >+${ sponsorData.Country_Code } ${
+                                        sponsorData.Phone }</span
+                                    >
+                                    <div v-else class="input-group">
+                                        <span class="input-group-text">+</span>
+                                        <input
+                                            v-model="editValues['Country_Code']"
+                                            class="form-control"
+                                            style="max-width: 100px"
+                                        />
+                                        <input
+                                            v-model="editValues['Phone']"
+                                            class="form-control"
+                                        />
+                                    </div>
+                                </div>
+                                <div
+                                    class="col-3 mb-2 align-self-center"
+                                    v-if="key == 'Industry'"
+                                >
+                                    <strong> Industry </strong>
+                                </div>
+                                <div
+                                    class="col-6 mb-2"
+                                    v-if="key == 'Industry'"
+                                >
+                                    <span v-if="!editMode">${ value }</span>
+                                    <select
+                                        v-else
+                                        v-model="editValues['Industry']"
+                                        class="form-control"
+                                    >
+                                        <option value="Technology">
+                                            Technology
+                                        </option>
+                                        <option value="Fashion">Fashion</option>
+                                        <option value="Banking">Banking</option>
+                                        <option value="Healthcare">
+                                            Healthcare
+                                        </option>
+                                        <option value="Automotive">
+                                            Automotive
+                                        </option>
+                                        <option value="Real Estate">
+                                            Real Estate
+                                        </option>
+                                        <option value="Travel & Tourism">
+                                            Travel & Tourism
+                                        </option>
+                                        <option value="Food & Beverage">
+                                            Food & Beverage
+                                        </option>
+                                        <option value="Entertainment">
+                                            Entertainment
+                                        </option>
+                                        <option value="Others">Others</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button
+                                    v-if="!editMode"
+                                    class="btn btn-primary"
+                                    @click="enableEdit"
+                                >
+                                    Edit
+                                </button>
+                                <div v-else>
+                                    <button
+                                        class="btn btn-success"
+                                        @click="saveChanges"
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        class="btn btn-secondary ml-2"
+                                        @click="cancelEdit"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="{{ url_for('static', filename='js/sponsor/profile.js') }}"></script>
+    </body>
+</html>

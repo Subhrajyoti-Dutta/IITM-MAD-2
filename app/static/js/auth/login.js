@@ -1,5 +1,6 @@
 new Vue({
     el: "#app",
+    delimiters: ["${", "}"],
     data: {
         username: "",
         password: "",
@@ -15,10 +16,12 @@ new Vue({
                     remember: this.remember,
                 })
                 .then((response) => {
+                    console.log(response.data);
                     if (response.data.success) {
                         localStorage.setItem("id", response.data.id);
                         window.location.href = response.data.next || "/";
                     } else {
+                        console.log(response.data);
                         this.error = response.data.message;
                     }
                 })
