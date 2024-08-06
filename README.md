@@ -30,114 +30,112 @@ The Influencer Management System provides functionalities for managing influence
 
 ## Directory Structure
 
-```
 ./
-----.gitignore
-----dir.txt
-----local_run.bat
-----local_setup.bat
-----README.md
-----requirements.txt
-----run.py
-----app/
---------config.py
---------data.py
---------models.py
---------__init__.py
---------api/
-------------admin.py
-------------adperformance.py
-------------adrequest.py
-------------campaign.py
-------------influencer.py
-------------sponsor.py
-------------__init__.py
---------static/
-------------css/
-----------------index.css
-----------------style.css
-----------------admin/
---------------------admins.css
---------------------campaigns.css
---------------------dashboard.css
---------------------influencers.css
---------------------sponsors.css
-----------------auth/
---------------------login.css
---------------------register_influencer.css
---------------------register_sponsor.css
-----------------influencer/
---------------------dashboard.css
---------------------find_campaign.css
---------------------profile.css
---------------------sponsors.css
---------------------stats.css
-----------------sponsor/
---------------------dashboard.css
---------------------influencers.css
---------------------profile.css
-------------img/
-----------------path_to_profile_picture.webp
-----------------icons/
-----------------logos/
-------------js/
-----------------admin/
---------------------admins.js
---------------------campaigns.js
---------------------dashboard.js
---------------------influencers.js
---------------------sponsors.js
-----------------auth/
---------------------login.js
---------------------register_influencer.js
---------------------register_sponsor.js
-----------------influencer/
---------------------dashboard.js
---------------------find_campaign.js
---------------------profile.js
---------------------sponsors.js
---------------------stats.js
-----------------sponsor/
---------------------campaigns.js
---------------------dashboard.js
---------------------influencers.js
---------------------profile.js
---------------------stats.js
---------templates/
-------------index.html
-------------admin/
-----------------admins.html
-----------------campaigns.html
-----------------dashboard.html
-----------------influencers.html
-----------------sponsors.html
-------------auth/
-----------------login.html
-----------------register_influencer.html
-----------------register_sponsor.html
-------------influencer/
-----------------dashboard.html
-----------------find_campaign.html
-----------------profile.html
-----------------sponsors.html
-----------------stats.html
-------------sponsor/
-----------------campaigns.html
-----------------dashboard.html
-----------------influencers.html
-----------------profile.html
-----------------stats.html
---------views/
-------------admin.py
-------------auth.py
-------------influencer.py
-------------sponsor.py
-------------__init__.py
-----docs/
---------api.yaml
-----instance/
---------database.db
-```
+├── .gitignore
+├── dir.txt
+├── local_run.bat
+├── local_setup.bat
+├── README.md
+├── requirements.txt
+├── run.py
+├── app/
+│ ├── config.py
+│ ├── data.py
+│ ├── models.py
+│ ├── init.py
+│ ├── api/
+│ │ ├── admin.py
+│ │ ├── adperformance.py
+│ │ ├── adrequest.py
+│ │ ├── campaign.py
+│ │ ├── influencer.py
+│ │ ├── sponsor.py
+│ │ └── init.py
+│ ├── static/
+│ │ ├── css/
+│ │ │ ├── index.css
+│ │ │ ├── style.css
+│ │ │ ├── admin/
+│ │ │ │ ├── admins.css
+│ │ │ │ ├── campaigns.css
+│ │ │ │ ├── dashboard.css
+│ │ │ │ ├── influencers.css
+│ │ │ │ └── sponsors.css
+│ │ │ ├── auth/
+│ │ │ │ ├── login.css
+│ │ │ │ ├── register_influencer.css
+│ │ │ │ └── register_sponsor.css
+│ │ │ ├── influencer/
+│ │ │ │ ├── dashboard.css
+│ │ │ │ ├── find_campaign.css
+│ │ │ │ ├── profile.css
+│ │ │ │ ├── sponsors.css
+│ │ │ │ └── stats.css
+│ │ │ ├── sponsor/
+│ │ │ │ ├── dashboard.css
+│ │ │ │ ├── influencers.css
+│ │ │ │ └── profile.css
+│ │ ├── img/
+│ │ │ ├── path_to_profile_picture.webp
+│ │ │ ├── icons/
+│ │ │ └── logos/
+│ │ ├── js/
+│ │ │ ├── admin/
+│ │ │ │ ├── admins.js
+│ │ │ │ ├── campaigns.js
+│ │ │ │ ├── dashboard.js
+│ │ │ │ ├── influencers.js
+│ │ │ │ └── sponsors.js
+│ │ │ ├── auth/
+│ │ │ │ ├── login.js
+│ │ │ │ ├── register_influencer.js
+│ │ │ │ └── register_sponsor.js
+│ │ │ ├── influencer/
+│ │ │ │ ├── dashboard.js
+│ │ │ │ ├── find_campaign.js
+│ │ │ │ ├── profile.js
+│ │ │ │ ├── sponsors.js
+│ │ │ │ └── stats.js
+│ │ │ ├── sponsor/
+│ │ │ ├── campaigns.js
+│ │ │ ├── dashboard.js
+│ │ │ ├── influencers.js
+│ │ │ ├── profile.js
+│ │ │ └── stats.js
+│ ├── templates/
+│ │ ├── index.html
+│ │ ├── admin/
+│ │ │ ├── admins.html
+│ │ │ ├── campaigns.html
+│ │ │ ├── dashboard.html
+│ │ │ ├── influencers.html
+│ │ │ └── sponsors.html
+│ │ ├── auth/
+│ │ │ ├── login.html
+│ │ │ ├── register_influencer.html
+│ │ │ └── register_sponsor.html
+│ │ ├── influencer/
+│ │ │ ├── dashboard.html
+│ │ │ ├── find_campaign.html
+│ │ │ ├── profile.html
+│ │ │ ├── sponsors.html
+│ │ │ └── stats.html
+│ │ ├── sponsor/
+│ │ ├── campaigns.html
+│ │ ├── dashboard.html
+│ │ ├── influencers.html
+│ │ ├── profile.html
+│ │ └── stats.html
+│ ├── views/
+│ │ ├── admin.py
+│ │ ├── auth.py
+│ │ ├── influencer.py
+│ │ ├── sponsor.py
+│ │ └── init.py
+├── docs/
+│ └── api.yaml
+└── instance/
+└── database.db
 
 ## Installation
 
@@ -175,21 +173,17 @@ The Influencer Management System provides functionalities for managing influence
 
 ## API Documentation
 
-The API documentation is available in the `docs/api_spec.yaml` file. You can view it using any YAML viewer or import it into tools like Swagger UI or Postman.
+The API documentation is available in the `docs/api.yaml` file. You can view it using any YAML viewer or import it into tools like Swagger UI or Postman.
 
-## Testing
+## Contributing
 
-Run the tests using:
-
-```sh
-pytest
-Contributing
 Contributions are welcome! Please follow these steps to contribute:
 
 Fork the repository.
 Create a new branch for your feature or bug fix.
 Commit your changes.
 Push the branch and create a pull request.
-License
+
+## License
+
 This project is licensed under the MIT License. See the LICENSE file for details.
-```
