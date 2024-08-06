@@ -30,7 +30,7 @@ The Influencer Management System provides functionalities for managing influence
 
 ## Directory Structure
 
-./
+```./
 ├── .gitignore
 ├── dir.txt
 ├── local_run.bat
@@ -136,6 +136,7 @@ The Influencer Management System provides functionalities for managing influence
 │ └── api.yaml
 └── instance/
 └── database.db
+```
 
 ## Installation
 
