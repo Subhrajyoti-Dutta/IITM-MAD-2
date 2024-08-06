@@ -30,6 +30,7 @@ The Influencer Management System provides functionalities for managing influence
 
 ## Directory Structure
 
+```
 ./
 ----.gitignore
 ----dir.txt
@@ -137,6 +138,7 @@ The Influencer Management System provides functionalities for managing influence
 --------api.yaml
 ----instance/
 --------database.db
+```
 
 ## Installation
 
