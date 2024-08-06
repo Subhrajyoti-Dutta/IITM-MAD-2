@@ -4,6 +4,7 @@ new Vue({
     data: {
         id: 0,
         username: "",
+        budget: 0,
         sponsorData: {},
         editValues: {},
         editMode: false,
@@ -47,6 +48,7 @@ new Vue({
             .then((response) => {
                 this.username = response.data["Username"];
                 delete response.data["Username"];
+                this.budget = response.data["Budget"];
                 this.sponsorData = response.data;
                 this.loading = false;
             })

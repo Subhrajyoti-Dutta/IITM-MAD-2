@@ -5,3 +5,15 @@ body {
     font-family: "Arial", sans-serif;
     background: linear-gradient(to right, #6a11cb, #2575fc);
 }
+
+.text-white {
+    color: #fff;
+}
+
+.text-black {
+    color: #000;
+}
+
+.tt {
+    font-family: "Lucida Console", "Menlo", "Monaco", "Courier", monospace;
+}

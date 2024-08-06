@@ -8,7 +8,7 @@ new Vue({
         budget: 0,
         loading: true,
         influencers: [],
-        modalInfluencer: {},
+        modalInfluencer: { Platform: {} },
     },
     methods: {
         fetchData() {
@@ -17,7 +17,7 @@ new Vue({
                 .then((response) => {
                     this.username = response.data["Username"];
                     this.company = response.data["Company"];
-                    // this.budget = response.data["Budget"];
+                    this.budget = response.data["Budget"];
                     this.loading = false;
                 })
                 .catch((error) => {
@@ -29,6 +29,7 @@ new Vue({
             axios
                 .get(`/api/influencer_api/influencers`)
                 .then((response) => {
+                    console.log(response.data);
                     this.influencers = response.data;
                 })
                 .catch((error) => {

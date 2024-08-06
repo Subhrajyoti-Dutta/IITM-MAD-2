@@ -11,7 +11,7 @@ def abort_if_ad_doesnt_exist(campaign_id, ad_id):
         abort(404, description = f"AdRequest {ad_id} in Campaign {campaign_id} doesn't exist" )
     return ad
 
-def abort_if_ad_is_not_active(ad_id):
+def abort_if_ad_perf_is_not_active(ad_id):
     ad = AdPerformance.query.get(ad_id)
     if not ad:
         abort(404, description=f"AdPerformance {ad_id} isn't active")
@@ -20,7 +20,7 @@ def abort_if_ad_is_not_active(ad_id):
 class AdPerformanceAPI(Resource):
     def get(self, campaign_id, ad_id):
         abort_if_ad_doesnt_exist(campaign_id, ad_id)
-        ad_performance = abort_if_ad_is_not_active(ad_id)
+        ad_performance = abort_if_ad_perf_is_not_active(ad_id)
         if ad_performance:
             return ad_performance.to_dict()
         else:
@@ -28,7 +28,7 @@ class AdPerformanceAPI(Resource):
 
     def put(self, campaign_id, ad_id):
         abort_if_ad_doesnt_exist(campaign_id, ad_id)
-        ad_performance = abort_if_ad_is_not_active(ad_id)
+        ad_performance = abort_if_ad_perf_is_not_active(ad_id)
         data = request.get_json()
         ad_performance.reach = data.get('Reach', ad_performance.reach)
         ad_performance.posts = data.get('Posts', ad_performance.posts)
@@ -57,7 +57,7 @@ class AdPerformanceAPI(Resource):
 
     def delete(self, campaign_id, ad_id):
         abort_if_ad_doesnt_exist(campaign_id, ad_id)
-        abort_if_ad_is_not_active(ad_id)
+        abort_if_ad_perf_is_not_active(ad_id)
         ad_performance = AdPerformance.query.filter_by(ad_id=ad_id).first()
         db.session.delete(ad_performance)
         db.session.commit()

@@ -5,7 +5,9 @@ new Vue({
         id: 0,
         username: "",
         influencerData: {},
+        totalEarnings: 0,
         editValues: {},
+        averageRating: 0,
         editMode: false,
         loading: true,
         presence: {},
@@ -69,6 +71,10 @@ new Vue({
                 delete response.data["Username"];
                 this.presence = response.data["Platform Presence"];
                 delete response.data["Platform Presence"];
+                this.averageRating = response.data["Rating"];
+                delete response.data["Rating"];
+                this.totalEarnings = response.data["Earnings"];
+                delete response.data["Earnings"];
                 this.influencerData = response.data;
                 this.loading = false;
             })

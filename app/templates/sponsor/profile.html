@@ -124,7 +124,7 @@
                                 </div>
                                 <div
                                     class="col-6 mb-2 align-self-center"
-                                    v-if="key != 'Country_Code' && key !== 'Phone' && key !== 'Industry'"
+                                    v-if="key != 'Country_Code' && key !== 'Phone' && key !== 'Industry' && key !== 'Sponsor_ID'"
                                 >
                                     <span
                                         v-if="!editMode"
@@ -135,6 +135,22 @@
                                         v-else
                                         v-model="editValues[key]"
                                         class="form-control"
+                                    />
+                                </div>
+                                <div
+                                    class="col-6 mb-2 align-self-center"
+                                    v-if="key == 'Sponsor_ID'"
+                                >
+                                    <span
+                                        v-if="!editMode"
+                                        class="align-self-center"
+                                        >${ value }</span
+                                    >
+                                    <input
+                                        v-else
+                                        v-model="editValues[key]"
+                                        class="form-control"
+                                        readonly
                                     />
                                 </div>
                                 <div

@@ -46,6 +46,7 @@ def create_app():
     from app.api.campaign import CampaignAPI, CampaignListAPI
     from app.api.adrequest import AdRequestAPI, AdRequestListAPI
     from app.api.adperformance import AdPerformanceAPI
+    from app.api.admin import SponsorsAPI, InfluencersAPI, CampaignsAPI, AdminsAPI, AdsAPI, StatisticsAPI
 
     api = Api(app)
     api.add_resource(InfluencerListAPI,     '/api/influencer_api/influencers')
@@ -59,13 +60,18 @@ def create_app():
     api.add_resource(AdRequestAPI,          '/api/campaign_api/campaign/<int:campaign_id>/adrequest/<int:ad_id>', '/api/campaign_api/campaign/<int:campaign_id>/adrequest')
     api.add_resource(AdRequestListAPI,      '/api/campaign_api/campaign/<int:campaign_id>/adrequests')
     api.add_resource(AdPerformanceAPI,      '/api/campaign_api/campaign/<int:campaign_id>/adrequest/<int:ad_id>/performance')
-
+    api.add_resource(SponsorsAPI,           '/api/admin_api/sponsors', '/api/admin_api/sponsor/<int:sponsor_id>')
+    api.add_resource(InfluencersAPI,        '/api/admin_api/influencers', '/api/admin_api/influencer/<int:influencer_id>')
+    api.add_resource(CampaignsAPI,          '/api/admin_api/campaigns', '/api/admin_api/campaign/<int:campaign_id>')
+    api.add_resource(AdsAPI,                '/api/admin_api/campaign/<int:campaign_id>/ads', '/api/admin_api/campaign/<int:campaign_id>/ad/<int:ad_id>')
+    api.add_resource(AdminsAPI,             '/api/admin_api/admins', '/api/admin_api/admin/<int:admin_id>')
+    api.add_resource(StatisticsAPI,         '/api/admin_api/statistics')
     return app
 
 # User loader callback
 @login_manager.user_loader
 def load_user(user_id):
-    from app.models import Sponsor, Influencer
+    from app.models import Sponsor, Influencer, Admin
     
     # If not found, attempt to load the user from the Sponsor model
     sponsor = Sponsor.query.get(int(user_id))
@@ -76,6 +82,10 @@ def load_user(user_id):
     influencer = Influencer.query.get(int(user_id))
     if influencer:
         return influencer
+    
+    admin = Admin.query.get(int(user_id))
+    if admin:
+        return admin
 
 # Celery configuration
 def make_celery(app):

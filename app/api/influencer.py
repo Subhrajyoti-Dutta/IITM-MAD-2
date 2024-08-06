@@ -11,13 +11,17 @@ def abort_if_influencer_doesnt_exist(influencer_id):
 class InfluencerListAPI(Resource):
     def get(self):
         influencers = Influencer.query.all()
-        return [influencer.to_dict() for influencer in influencers]
+        return [influencer._to_dict() for influencer in influencers]
 
 class InfluencerAPI(Resource):
     def get(self, influencer_id):
         abort_if_influencer_doesnt_exist(influencer_id)
+        ratings = db.session.query(AdPerformance.rating).join(AdRequest).filter(AdRequest.influencer_id==influencer_id).all()
+        averagerating = sum(map(lambda x : x[0],ratings))/len(ratings)
+        completed = AdRequest.query.filter_by(influencer_id=influencer_id).all()
+        earning = sum([comp.payment_amount for comp in completed])
         influencer = Influencer.query.get(influencer_id)
-        return influencer.to_dict()
+        return {**influencer._to_dict(),"Rating":round(averagerating,2), "Earnings":earning}
 
     def put(self, influencer_id):
         abort_if_influencer_doesnt_exist(influencer_id)
@@ -97,7 +101,7 @@ class InfluAdAPI(Resource):
     def get(self, influencer_id, status="all"):
         if status == "all":
             ad_requests = db.session.query(AdRequest, Campaign).join(Campaign).filter(AdRequest.influencer_id==influencer_id).all()
-            return jsonify([{**ad.to_dict(), **camp.to_dict()} for (ad, camp) in ad_requests])
+            return jsonify([{**ad.to_dict(), **camp.to_dict(), "Flag":(ad.flag or camp.flag)} for (ad, camp) in ad_requests])
         else:
             ad_requests = db.session.query(AdRequest, Campaign).join(Campaign).filter(AdRequest.influencer_id==influencer_id).filter(AdRequest.status==status.capitalize()).all()
-            return jsonify([{**ad.to_dict(), **camp.to_dict()} for (ad, camp) in ad_requests])
+            return jsonify([{**ad._to_dict(), **camp._to_dict()} for (ad, camp) in ad_requests])

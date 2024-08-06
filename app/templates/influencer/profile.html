@@ -97,8 +97,7 @@
                             <p><strong>Username:</strong> ${ username }</p>
                             <p><strong>Rating:</strong> ${ averageRating }</p>
                             <p>
-                                <strong>Earnings:</strong> ${
-                                totalEarnings.toFixed(2) }
+                                <strong>Earnings:</strong> $${ totalEarnings }
                             </p>
                         </div>
                     </div>
@@ -117,10 +116,22 @@
                                 </div>
                                 <div
                                     class="col-6 mb-2"
-                                    v-if="key !== 'Country_Code' && key !== 'Phone' && key !== 'Platform'"
+                                    v-if="key !== 'Country_Code' && key !== 'Phone' && key !== 'Platform' && key !== 'Influencer_ID'"
                                 >
                                     <span v-if="!editMode">${ value }</span>
                                     <input
+                                        v-else
+                                        v-model="editValues[key]"
+                                        class="form-control"
+                                    />
+                                </div>
+                                <div
+                                    class="col-6 mb-2"
+                                    v-if="key === 'Influencer_ID'"
+                                >
+                                    <span v-if="!editMode">${ value }</span>
+                                    <input
+                                        readonly
                                         v-else
                                         v-model="editValues[key]"
                                         class="form-control"
@@ -143,7 +154,7 @@
                                     <div v-else class="input-group">
                                         <span class="input-group-text">+</span>
                                         <input
-                                            v-model="editValues['Country Code']"
+                                            v-model="editValues['Country_Code']"
                                             class="form-control"
                                             style="max-width: 100px"
                                         />

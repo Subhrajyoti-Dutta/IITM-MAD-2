@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_restful import Resource, Api
-from app.models import db, AdRequest, Campaign
+from app.models import db, AdRequest, Campaign, AdPerformance
 import random
 
 adrequest_bp = Blueprint('adrequests', __name__)
@@ -30,35 +30,33 @@ class AdRequestAPI(Resource):
         return ad_request.to_dict()
 
     def put(self, campaign_id, ad_id):
-        print("Voila")
         abort_if_campaign_or_ad_doesnt_exist(campaign_id, ad_id)
-        print("Voila2")
         ad_request = AdRequest.query.filter_by(campaign_id=campaign_id, ad_id=ad_id).first()
-        print("Voila3")
         data = request.get_json()
-        print("Voila4")
-        print(data)
-        print("Voila5")
         new_budget = abort_if_not_enough_budget(
             data.get('Payment_Amount', ad_request.payment_amount) - ad_request.payment_amount,
             campaign_id
         )
-        print("Voila6")
         ad_request.influencer_id = data.get('Influencer_ID', ad_request.influencer_id)
-        print("Voila7")
+        ad_request.topic = data.get('Topic', ad_request.topic)
         ad_request.messages = data.get('Messages', ad_request.messages)
-        print("Voila8")
         ad_request.requirements = data.get('Requirements', ad_request.requirements)
-        print("Voila9")
         ad_request.payment_amount = data.get('Payment_Amount', ad_request.payment_amount)
-        print("Voila10")
         ad_request.status = data.get('Status', ad_request.status)
-        print("Voila11")
+
+        if ad_request.status == "Active" and not AdPerformance.query.get(ad_id):
+            ad_performance = AdPerformance(
+                ad_id=ad_id,
+                reach=data.get('Reach', 0),
+                posts=data.get('Posts', 0),
+                likes=data.get('Likes', 0),
+                rating=data.get('Rating', 0)
+            )
+            db.session.add(ad_performance)
+            print("Hello WOrld")
 
         db.session.commit()
-        print("Voila12")
         res = ad_request.to_dict()
-        print("Voila13")
         res["New Budget"] = new_budget
         return res, 201
 
@@ -77,6 +75,7 @@ class AdRequestAPI(Resource):
             ad_id=new_id,
             campaign_id=campaign_id,
             influencer_id=data.get('Influencer_ID'),
+            topic=data.get('Topic'),
             messages=data.get('Messages'),
             requirements=data.get('Requirements'),
             payment_amount=data.get('Payment_Amount'),

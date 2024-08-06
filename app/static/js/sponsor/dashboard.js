@@ -16,12 +16,10 @@ new Vue({
             axios
                 .get(`/api/sponsor_api/sponsor/${this.id}`)
                 .then((response) => {
-                    console.log(response.data);
                     this.username = response.data["Username"];
                     this.company = response.data["Company"];
-                    // this.budget = response.data["Budget"];
+                    this.budget = response.data["Budget"];
                     this.loading = false;
-                    console.log(this.loading);
                 })
                 .catch((error) => {
                     console.error("Error fetching data:", error);
@@ -41,14 +39,16 @@ new Vue({
         },
         viewCampaign(campaign) {
             this.modalCampaign = campaign;
+            console.log(this.modalCampaign);
             $("#campaignModal").modal("show");
         },
-        deleteCampaign(campaignId) {
+        deleteCampaign(campaignId, adId) {
             axios
-                .delete(`/api/campaign_api/campaign/${campaignId}`)
+                .delete(
+                    `/api/campaign_api/campaign/${campaignId}/adrequest/${adId}`
+                )
                 .then((response) => {
-                    console.log("Campaign deleted:", response);
-                    this.fetchCampaigns("Pending").then((data) => {
+                    this.fetchCampaigns("null").then((data) => {
                         this.pendingCampaigns = data;
                     });
                 })
@@ -60,11 +60,29 @@ new Vue({
     created() {
         this.id = localStorage.getItem("id");
         this.fetchData();
-        this.fetchCampaigns("active").then((data) => {
-            this.activeCampaigns = data;
+        this.fetchCampaigns("Active").then((data) => {
+            data.forEach((campaign) => {
+                console.log(campaign);
+                campaign.Ads.map((ad) => {
+                    ad.Flag = ad.Flag || campaign.Flag;
+                    ad.Campaign_ID = campaign.Campaign_ID;
+                });
+                this.activeCampaigns = this.activeCampaigns.concat(
+                    campaign.Ads
+                );
+            });
+            console.log(this.activeCampaigns);
         });
-        this.fetchCampaigns("null").then((data) => {
-            this.pendingCampaigns = data;
+        this.fetchCampaigns("Null").then((data) => {
+            data.forEach((campaign) => {
+                campaign.Ads.map((ad) => {
+                    ad.Flag = ad.Flag || campaign.Flag;
+                    ad.Campaign_ID = campaign.Campaign_ID;
+                });
+                this.pendingCampaigns = this.pendingCampaigns.concat(
+                    campaign.Ads
+                );
+            });
         });
     },
 });

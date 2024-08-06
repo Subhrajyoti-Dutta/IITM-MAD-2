@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Influencer Dashboard</title>
+        <title>Sponsor Stats</title>
         <link
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
             rel="stylesheet"
@@ -14,13 +14,13 @@
         />
         <link
             rel="stylesheet"
-            href="{{ url_for('static', filename='css/influencer/stats.css') }}"
+            href="{{ url_for('static', filename='css/sponsor/stats.css') }}"
         />
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">INFLUENCER DASHBOARD</a>
+                <a class="navbar-brand" href="#">SPONSOR DASHBOARD</a>
                 <button
                     class="navbar-toggler"
                     type="button"
@@ -37,35 +37,35 @@
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="{{ url_for('influencer.dashboard')}}"
+                                href="{{ url_for('sponsor.dashboard')}}"
                                 >HOME</a
                             >
                         </li>
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="{{ url_for('influencer.profile')}}"
+                                href="{{ url_for('sponsor.profile')}}"
                                 >PROFILE</a
                             >
                         </li>
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="{{ url_for('influencer.sponsors')}}"
-                                >SPONSORS</a
+                                href="{{ url_for('sponsor.influencers')}}"
+                                >INFLUENCERS</a
                             >
                         </li>
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="{{ url_for('influencer.find_campaign')}}"
+                                href="{{ url_for('sponsor.campaigns')}}"
                                 >CAMPAIGNS</a
                             >
                         </li>
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="{{ url_for('influencer.stats')}}"
+                                href="{{ url_for('sponsor.stats')}}"
                                 >STATS</a
                             >
                         </li>
@@ -89,7 +89,7 @@
                             <img
                                 src="{{ url_for('static', filename='img/path_to_profile_picture.webp') }}"
                                 alt="Profile Picture"
-                                class="img-fluid profile-image"
+                                class="img-fluid rounded-circle mb-3"
                             />
                         </div>
                         <div>
@@ -100,59 +100,47 @@
                                 <strong>Username:</strong> ${ username }
                             </p>
                             <p class="text-white">
-                                <strong>Rating:</strong> ${ averageRating }
+                                <strong>Company:</strong> ${ company }
                             </p>
                             <p class="text-white">
-                                <strong>Earnings:</strong> $${ totalEarnings }
+                                <strong>Budget:</strong> $${ budget.toFixed(2) }
                             </p>
                         </div>
                     </div>
                     <div class="col-9">
-                        <div class="stats-container">
-                            <div class="stat-card">
-                                <h5>Performance Statistics</h5>
-                                <p>
-                                    <strong>Total Campaigns:</strong> ${
-                                    totalCampaigns }
+                        <h3 class="text-white">Campaign Stats</h3>
+                        <ul class="list-group mb-3">
+                            <li
+                                v-for="campaign in campaigns"
+                                :key="campaign.Campaign_ID"
+                                class="list-group-item"
+                            >
+                                <h5 class="mb-1">${ campaign.Name }</h5>
+                                <small
+                                    >${ campaign.Start_Date } to ${
+                                    campaign.End_Date }</small
+                                >
+                                <p class="mb-1">
+                                    <strong>Reach:</strong> ${ campaign.Reach }
                                 </p>
-                                <p>
-                                    <strong>Active Campaigns:</strong> ${
-                                    activeCampaigns }
+                                <p class="mb-1">
+                                    <strong>Posts:</strong> ${ campaign.Posts }
                                 </p>
-                                <p>
-                                    <strong>Completed Campaigns:</strong> ${
-                                    completedCampaigns }
+                                <p class="mb-1">
+                                    <strong>Likes:</strong> ${ campaign.Likes }
                                 </p>
-                                <p>
-                                    <strong>Rejected Campaigns:</strong> ${
-                                    rejectedCampaigns }
-                                </p>
-                            </div>
-                            <div class="stat-card">
-                                <h5>Engagement Statistics</h5>
-                                <p>
-                                    <strong>Total Reach:</strong> ${ totalReach
+                                <p class="mb-1">
+                                    <strong>Rating:</strong> ${ campaign.Rating
                                     }
                                 </p>
-                                <p>
-                                    <strong>Total Posts:</strong> ${ totalPosts
-                                    }
-                                </p>
-                                <p>
-                                    <strong>Total Likes:</strong> ${ totalLikes
-                                    }
-                                </p>
-                            </div>
-                        </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
-        <script src="{{ url_for('static', filename='js/influencer/stats.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/sponsor/stats.js') }}"></script>
     </body>
 </html>

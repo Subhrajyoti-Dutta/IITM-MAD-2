@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sponsor Dashboard</title>
+        <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/sponsor/campaigns.css') }}"
+        />
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">SPONSOR DASHBOARD</a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('sponsor.dashboard') }}"
+                                >HOME</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('sponsor.profile') }}"
+                                >PROFILE</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('sponsor.influencers') }}"
+                                >INFLUENCERS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('sponsor.campaigns') }}"
+                                >CAMPAIGNS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('sponsor.stats') }}"
+                                >STATS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('auth.logout') }}"
+                                >LOGOUT</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="app" class="container mt-5">
+            <div v-if="loading" class="text-center">Loading...</div>
+            <div v-if="!loading">
+                <div class="row">
+                    <div class="col-3">
+                        <div>
+                            <img
+                                src="{{ url_for('static', filename='img/path_to_profile_picture.webp') }}"
+                                alt="Profile Picture"
+                                class="img-fluid rounded-circle mb-3"
+                            />
+                        </div>
+                        <div>
+                            <p class="text-white">
+                                <strong>ID:</strong> ${ id }
+                            </p>
+                            <p class="text-white">
+                                <strong>Username:</strong> ${ username }
+                            </p>
+                            <p class="text-white">
+                                <strong>Company:</strong> ${ company }
+                            </p>
+                            <p class="text-white">
+                                <strong>Budget:</strong> $${ budget.toFixed(2) }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="mb-3 input-group">
+                            <input
+                                type="text"
+                                v-model="searchQuery"
+                                class="form-control"
+                                placeholder="Search campaigns by name"
+                            />
+                            <div class="input-group-append">
+                                <button
+                                    class="btn btn-success"
+                                    @click="filterCampaigns"
+                                >
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <select
+                                    v-model="selectedInfluencer"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                >
+                                    <option value="">All Influencers</option>
+                                    <option
+                                        v-for="influencer in influencers"
+                                        :key="influencer.Influencer_ID"
+                                        :value="influencer.Influencer_ID"
+                                    >
+                                        ${ influencer.Full_Name }
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <select
+                                    v-model="selectedStatus"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                >
+                                    <option value="All">All Statuses</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Rejected">Rejected</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Null">Null</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <input
+                                    type="date"
+                                    v-model="startDate"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                />
+                            </div>
+                            <div class="col">
+                                <input
+                                    type="date"
+                                    v-model="endDate"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                />
+                            </div>
+                        </div>
+                        <div class="mb-3 text-right">
+                            <button
+                                class="btn btn-success"
+                                @click="openAddCampaignModal"
+                            >
+                                Add Campaign
+                            </button>
+                        </div>
+                        <div
+                            v-for="campaign in filteredCampaigns"
+                            class="card mb-3"
+                        >
+                            <div
+                                class="card-body d-flex"
+                                :class="{'bg-danger':campaign.Flag}"
+                            >
+                                <div class="col-md-12 pl-0 pr-0">
+                                    <div
+                                        class="d-flex justify-content-between align-items-center pb-3"
+                                    >
+                                        <div>
+                                            <h5 class="card-title">
+                                                <b>${ campaign.Name }</b>
+                                            </h5>
+                                            <p class="card-text">
+                                                <b>Description: </b>${
+                                                campaign.Description }
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <button
+                                                v-if="!campaign.Flag"
+                                                class="btn btn-success mr-1"
+                                                @click="openAddAdModal(campaign)"
+                                            >
+                                                Add Ad
+                                            </button>
+                                            <button
+                                                class="btn btn-primary"
+                                                @click="viewCampaign(campaign)"
+                                            >
+                                                View
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <ul class="list-group">
+                                        <li
+                                            v-for="ad in campaign.Ads"
+                                            :key="ad.Ad_ID"
+                                            class="list-group-item d-flex justify-content-between align-items-center"
+                                            :class="{'bg-danger':campaign.Flag || ad.Flag}"
+                                        >
+                                            <div>
+                                                <div>
+                                                    <span class="text-black"
+                                                        ><strong>Topic: </strong
+                                                        >${ ad.Topic }</span
+                                                    >
+                                                </div>
+                                                <div>
+                                                    <span class="text-black"
+                                                        ><strong
+                                                            >Influencer ID: </strong
+                                                        >${ ad.Influencer_ID
+                                                        }</span
+                                                    >
+                                                </div>
+                                                <div>
+                                                    <span class="text-black"
+                                                        ><strong
+                                                            >Status: </strong
+                                                        >${ ad.Status }</span
+                                                    >
+                                                </div>
+                                            </div>
+                                            <button
+                                                class="btn btn-primary"
+                                                @click="viewAd(campaign, ad)"
+                                            >
+                                                View
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Campaign Modal -->
+            <div
+                class="modal fade"
+                id="addCampaignModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="addCampaignModalLabel"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addCampaignModalLabel">
+                                Add New Campaign
+                            </h5>
+                        </div>
+                        <div class="modal-body">
+                            <form @submit.prevent="addCampaign">
+                                <div class="mb-3">
+                                    <label for="campaignName" class="form-label"
+                                        >Campaign Name</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="campaignName"
+                                        v-model="newCampaign.Name"
+                                        required
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label
+                                        for="campaignDescription"
+                                        class="form-label"
+                                        >Description</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="campaignDescription"
+                                        v-model="newCampaign.Description"
+                                        required
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label
+                                        for="campaignBudget"
+                                        class="form-label"
+                                        >Budget</label
+                                    >
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        id="campaignBudget"
+                                        v-model="newCampaign.Budget"
+                                        required
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label
+                                        for="campaignStartDate"
+                                        class="form-label"
+                                        >Start Date</label
+                                    >
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        id="campaignStartDate"
+                                        v-model="newCampaign.Start_Date"
+                                        required
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label
+                                        for="campaignEndDate"
+                                        class="form-label"
+                                        >End Date</label
+                                    >
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        id="campaignEndDate"
+                                        v-model="newCampaign.End_Date"
+                                        required
+                                    />
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    Add Campaign
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Ad Modal -->
+            <div
+                class="modal fade"
+                id="addAdModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="addAdModalLabel"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addAdModalLabel">
+                                Add New Ad
+                            </h5>
+                        </div>
+                        <div class="modal-body">
+                            <form @submit.prevent="addAd">
+                                <div class="mb-3">
+                                    <label for="adTopic" class="form-label"
+                                        >Topic</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="adTopic"
+                                        v-model="newAd.Topic"
+                                        required
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="adMessages" class="form-label"
+                                        >Messages</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="adMessages"
+                                        v-model="newAd.Messages"
+                                        required
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label
+                                        for="adRequirements"
+                                        class="form-label"
+                                        >Requirements</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="adRequirements"
+                                        v-model="newAd.Requirements"
+                                        required
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label
+                                        for="adPaymentAmount"
+                                        class="form-label"
+                                        >Payment Amount</label
+                                    >
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        id="adPaymentAmount"
+                                        v-model="newAd.Payment_Amount"
+                                        required
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="adInfluencer" class="form-label"
+                                        >Influencer</label
+                                    >
+                                    <select
+                                        class="form-control"
+                                        id="adInfluencer"
+                                        v-model="newAd.Influencer_ID"
+                                        required
+                                    >
+                                        <option value="" disabled>
+                                            Select Influencer
+                                        </option>
+                                        <option
+                                            v-for="influencer in influencers"
+                                            :key="influencer.Influencer_ID"
+                                            :value="influencer.Influencer_ID"
+                                        >
+                                            ${ influencer.Full_Name }
+                                        </option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    Add Ad
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Campaign Modal -->
+            <div
+                class="modal fade"
+                id="campaignModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="campaignModalLabel"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5
+                                class="modal-title text-black"
+                                id="campaignModalLabel"
+                            >
+                                <strong>${ modalCampaign.Name }</strong>
+                            </h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-md-12">
+                                <div class="mb-2 text-black">
+                                    <b>Campaign ID:</b>
+                                    <span v-if="!isEditingCampaign"
+                                        >${modalCampaign.Campaign_ID}</span
+                                    >
+                                    <input
+                                        v-if="isEditingCampaign"
+                                        v-model="modalCampaign.Campaign_ID"
+                                        type="text"
+                                        class="form-control"
+                                        readonly
+                                    />
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Description:</b>
+                                    <span v-if="!isEditingCampaign"
+                                        >${modalCampaign.Description}</span
+                                    >
+                                    <input
+                                        v-if="isEditingCampaign"
+                                        v-model="modalCampaign.Description"
+                                        type="text"
+                                        class="form-control"
+                                    />
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Budget:</b>
+                                    <span v-if="!isEditingCampaign"
+                                        >${modalCampaign.Budget}</span
+                                    >
+                                    <input
+                                        v-if="isEditingCampaign"
+                                        v-model="modalCampaign.Budget"
+                                        type="number"
+                                        class="form-control"
+                                    />
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Dates:</b>
+                                    <span v-if="!isEditingCampaign"
+                                        >${modalCampaign.Start_Date} to
+                                        ${modalCampaign.End_Date}</span
+                                    >
+                                    <div v-if="isEditingCampaign">
+                                        <input
+                                            v-model="modalCampaign.Start_Date"
+                                            type="date"
+                                            class="form-control mb-2"
+                                        />
+                                        <input
+                                            v-model="modalCampaign.End_Date"
+                                            type="date"
+                                            class="form-control"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Flagged:</b>
+                                    <span v-if="!isEditingCampaign"
+                                        >${modalCampaign.Flag}</span
+                                    >
+                                    <input
+                                        v-if="isEditingCampaign"
+                                        v-model="modalCampaign.Flag"
+                                        type="text"
+                                        class="form-control"
+                                        readonly
+                                    />
+                                </div>
+                            </div>
+                            <div class="modal-footer pb-0 pr-0">
+                                <button
+                                    v-if="!isEditingCampaign && !modalCampaign.Flag"
+                                    @click="isEditingCampaign = true"
+                                    class="btn btn-success"
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    v-if="isEditingCampaign && !modalCampaign.Flag"
+                                    @click="saveCampaignChanges"
+                                    class="btn btn-success"
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    v-if="!isEditingCampaign && !modalCampaign.Flag"
+                                    @click="deleteCampaign(modalCampaign.Campaign_ID)"
+                                    class="btn btn-danger"
+                                >
+                                    Delete
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-dismiss="modal"
+                                    @click="cancelEditCampaign"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Ad Modal -->
+            <div
+                class="modal fade"
+                id="adModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="adModalLabel"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5
+                                class="modal-title text-black"
+                                id="adModalLabel"
+                            >
+                                <strong>${ modalAd.Topic }</strong>
+                            </h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-md-12">
+                                <div class="mb-2 text-black">
+                                    <b>Ad ID:</b>
+                                    <span v-if="!isEditingAd"
+                                        >${modalAd.Ad_ID}</span
+                                    >
+                                    <input
+                                        v-if="isEditingAd"
+                                        v-model="modalAd.Ad_ID"
+                                        type="text"
+                                        class="form-control"
+                                        readonly
+                                    />
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Campaign ID:</b>
+                                    <span v-if="!isEditingAd"
+                                        >${modalAd.Campaign_ID}</span
+                                    >
+                                    <input
+                                        v-if="isEditingAd"
+                                        v-model="modalAd.Campaign_ID"
+                                        type="text"
+                                        class="form-control"
+                                        readonly
+                                    />
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Influencer ID:</b>
+                                    <span v-if="!isEditingAd"
+                                        >${modalAd.Influencer_ID}</span
+                                    >
+                                    <input
+                                        v-if="isEditingAd"
+                                        v-model="modalAd.Influencer_ID"
+                                        type="text"
+                                        class="form-control"
+                                        readonly
+                                    />
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Messages:</b>
+                                    <span v-if="!isEditingAd"
+                                        >${modalAd.Messages}</span
+                                    >
+                                    <input
+                                        v-if="isEditingAd"
+                                        v-model="modalAd.Messages"
+                                        type="text"
+                                        class="form-control"
+                                    />
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Requirements:</b>
+                                    <span v-if="!isEditingAd"
+                                        >${modalAd.Requirements}</span
+                                    >
+                                    <input
+                                        v-if="isEditingAd"
+                                        v-model="modalAd.Requirements"
+                                        type="text"
+                                        class="form-control"
+                                    />
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Payment Amount:</b>
+                                    <span v-if="!isEditingAd"
+                                        >${modalAd.Payment_Amount}</span
+                                    >
+                                    <input
+                                        v-if="isEditingAd"
+                                        v-model="modalAd.Payment_Amount"
+                                        type="number"
+                                        class="form-control"
+                                    />
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Status:</b>
+                                    <span v-if="!isEditingAd"
+                                        >${modalAd.Status}</span
+                                    >
+                                    <input
+                                        v-if="isEditingAd"
+                                        v-model="modalAd.Status"
+                                        type="text"
+                                        class="form-control"
+                                    />
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Flagged:</b>
+                                    <span v-if="!isEditingAd"
+                                        >${modalAd.Flag}</span
+                                    >
+                                    <input
+                                        v-if="isEditingAd"
+                                        v-model="modalAd.Flag"
+                                        type="text"
+                                        class="form-control"
+                                        readonly
+                                    />
+                                </div>
+                            </div>
+                            <div class="modal-footer pb-0 pr-0">
+                                <button
+                                    v-if="!isEditingAd && modalAd.Status == 'Null' && !modalAd.Flag"
+                                    @click="isEditingAd = true"
+                                    class="btn btn-success"
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    v-if="isEditingAd && modalAd.Status == 'Null' && !modalAd.Flag"
+                                    @click="saveAdChanges"
+                                    class="btn btn-success"
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    v-if="!isEditingAd && modalAd.Status == 'Null' && !modalAd.Flag"
+                                    @click="deleteAd(modalAd.Campaign_ID, modalAd.Ad_ID)"
+                                    class="btn btn-danger"
+                                >
+                                    Delete
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-dismiss="modal"
+                                    @click="cancelEditAd"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+        <script src="{{ url_for('static', filename='js/sponsor/campaigns.js') }}"></script>
+    </body>
+</html>

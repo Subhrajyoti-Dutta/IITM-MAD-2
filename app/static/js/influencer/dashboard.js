@@ -17,6 +17,8 @@ new Vue({
                 .get(`/api/influencer_api/influencer/${this.id}`)
                 .then((response) => {
                     this.username = response.data["Username"];
+                    this.averageRating = response.data["Rating"];
+                    this.totalEarnings = response.data["Earnings"];
                     this.loading = false;
                 })
                 .catch((error) => {
@@ -30,7 +32,6 @@ new Vue({
                     `/api/influencer_api/influencer/${this.id}/campaign/${status}`
                 )
                 .then((response) => {
-                    console.log(response.data);
                     return response.data;
                 })
                 .catch((error) => {
@@ -88,6 +89,33 @@ new Vue({
         this.fetchAds("active").then((data) => {
             this.activeCampaigns = data;
         });
+        // this.fetchAds("all").then((data) => {
+        //     rate = 0;
+        //     count = 0;
+        //     data.forEach((campaign) => {
+        //         if (
+        //             campaign.Status === "Active" ||
+        //             campaign.Status == "Completed"
+        //         ) {
+        //             axios
+        //                 .get(
+        //                     `/api/campaign_api/campaign/${campaign.Campaign_ID}/adrequest/${campaign.Ad_ID}/performance`
+        //                 )
+        //                 .then((response) => {
+        //                     console.log(response.data);
+        //                     rate = rate + response.data.Rating;
+        //                     count = count + 1;
+        //                     console.log(rate);
+        //                     console.log(count);
+        //                     this.averageRating =
+        //                         Math.round((rate / count) * 100) / 100;
+        //                 })
+        //                 .catch((error) => {
+        //                     console.error("Error rejecting campaign:", error);
+        //                 });
+        //         }
+        //     });
+        // });
         this.fetchAds("null").then((data) => {
             this.newCampaigns = data;
         });

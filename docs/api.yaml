@@ -1,0 +1,1083 @@
+openapi: 3.0.0
+info:
+    title: Influencer and Campaign Management API
+    version: 1.0.0
+    description: API for managing influencers, sponsors, campaigns, and ad requests.
+
+servers:
+    - url: http://localhost:5000/api
+
+paths:
+    /influencer_api/influencers:
+        get:
+            summary: Get list of influencers
+            operationId: getInfluencers
+            responses:
+                "200":
+                    description: A list of influencers
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Influencer"
+
+    /influencer_api/influencer:
+        post:
+            summary: Create a new influencer
+            operationId: createInfluencer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/InfluencerInput"
+            responses:
+                "201":
+                    description: Influencer created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Influencer"
+
+    /influencer_api/influencer/{influencer_id}:
+        get:
+            summary: Get an influencer by ID
+            operationId: getInfluencerById
+            parameters:
+                - name: influencer_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Influencer data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Influencer"
+
+        put:
+            summary: Update an influencer by ID
+            operationId: updateInfluencerById
+            parameters:
+                - name: influencer_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/InfluencerInput"
+            responses:
+                "200":
+                    description: Influencer updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Influencer"
+
+        delete:
+            summary: Delete an influencer by ID
+            operationId: deleteInfluencerById
+            parameters:
+                - name: influencer_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "204":
+                    description: Influencer deleted
+
+    /influencer_api/influencer/{influencer_id}/campaigns:
+        get:
+            summary: Get ad requests for an influencer
+            operationId: getAdRequests
+            parameters:
+                - name: influencer_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: A list of ad requests
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/AdRequest"
+
+    /influencer_api/influencer/{influencer_id}/campaign/{status}:
+        get:
+            summary: Get ad requests for an influencer by status
+            operationId: getAdRequestsByStatus
+            parameters:
+                - name: influencer_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                - name: status
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: A list of ad requests
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/AdRequest"
+
+    /sponsor_api/sponsors:
+        get:
+            summary: Get list of sponsors
+            operationId: getSponsors
+            responses:
+                "200":
+                    description: A list of sponsors
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Sponsor"
+
+    /sponsor_api/sponsor:
+        post:
+            summary: Create a new sponsor
+            operationId: createSponsor
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SponsorInput"
+            responses:
+                "201":
+                    description: Sponsor created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Sponsor"
+
+    /sponsor_api/sponsor/{sponsor_id}:
+        get:
+            summary: Get a sponsor by ID
+            operationId: getSponsorById
+            parameters:
+                - name: sponsor_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Sponsor data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Sponsor"
+
+        put:
+            summary: Update a sponsor by ID
+            operationId: updateSponsorById
+            parameters:
+                - name: sponsor_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SponsorInput"
+            responses:
+                "200":
+                    description: Sponsor updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Sponsor"
+
+        delete:
+            summary: Delete a sponsor by ID
+            operationId: deleteSponsorById
+            parameters:
+                - name: sponsor_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "204":
+                    description: Sponsor deleted
+
+    /sponsor_api/sponsor/{sponsor_id}/campaign/{status}:
+        get:
+            summary: Get ad requests for a sponsor by status
+            operationId: getAdRequestsForSponsorByStatus
+            parameters:
+                - name: sponsor_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                - name: status
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: A list of ad requests
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/AdRequestWithCampaign"
+
+    /sponsor_api/sponsor/{sponsor_id}/campaigns:
+        get:
+            summary: Get all ad requests for a sponsor
+            operationId: getAdRequestsForSponsor
+            parameters:
+                - name: sponsor_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: A list of ad requests
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/AdRequestWithCampaign"
+
+    /campaign_api/campaigns:
+        get:
+            summary: Get list of campaigns
+            operationId: getCampaigns
+            responses:
+                "200":
+                    description: A list of campaigns
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Campaign"
+
+    /campaign_api/campaign:
+        post:
+            summary: Create a new campaign
+            operationId: createCampaign
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/CampaignInput"
+            responses:
+                "201":
+                    description: Campaign created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Campaign"
+
+    /campaign_api/campaign/{campaign_id}:
+        get:
+            summary: Get a campaign by ID
+            operationId: getCampaignById
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Campaign data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Campaign"
+
+        put:
+            summary: Update a campaign by ID
+            operationId: updateCampaignById
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/CampaignInput"
+            responses:
+                "200":
+                    description: Campaign updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Campaign"
+
+        delete:
+            summary: Delete a campaign by ID
+            operationId: deleteCampaignById
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "204":
+                    description: Campaign deleted
+
+    /campaign_api/campaign/{campaign_id}/adrequest:
+        post:
+            summary: Create a new ad request
+            operationId: createAdRequest
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AdRequestInput"
+            responses:
+                "201":
+                    description: Ad request created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AdRequest"
+
+    /campaign_api/campaign/{campaign_id}/adrequest/{ad_id}:
+        get:
+            summary: Get an ad request by campaign ID and ad ID
+            operationId: getAdRequestById
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                - name: ad_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Ad request data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AdRequest"
+
+        put:
+            summary: Update an ad request by campaign ID and ad ID
+            operationId: updateAdRequestById
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                - name: ad_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AdRequestInput"
+            responses:
+                "200":
+                    description: Ad request updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AdRequest"
+
+        delete:
+            summary: Delete an ad request by campaign ID and ad ID
+            operationId: deleteAdRequestById
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                - name: ad_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "204":
+                    description: Ad request deleted
+
+    /campaign_api/campaign/{campaign_id}/adrequests:
+        get:
+            summary: Get list of ad requests for a campaign
+            operationId: getAdRequests
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: A list of ad requests
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/AdRequest"
+
+    /campaign_api/campaign/{campaign_id}/adrequest/{ad_id}/performance:
+        get:
+            summary: Get ad performance by Ad ID
+            operationId: getAdPerformanceById
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                - name: ad_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Ad performance data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AdPerformance"
+                "404":
+                    description: AdPerformance not found
+
+        put:
+            summary: Update ad performance by Ad ID
+            operationId: updateAdPerformanceById
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                - name: ad_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AdPerformance"
+            responses:
+                "200":
+                    description: Ad performance updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AdPerformance"
+                "404":
+                    description: AdPerformance not found
+
+        post:
+            summary: Create ad performance for an Ad ID
+            operationId: createAdPerformance
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                - name: ad_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AdPerformance"
+            responses:
+                "201":
+                    description: Ad performance created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AdPerformance"
+                "404":
+                    description: AdRequest not found
+
+        delete:
+            summary: Delete ad performance by Ad ID
+            operationId: deleteAdPerformanceById
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                - name: ad_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "204":
+                    description: Ad performance deleted
+                "404":
+                    description: AdPerformance not found
+
+    /admin_api/sponsors:
+        get:
+            summary: Get list of all sponsors
+            operationId: getAllSponsors
+            responses:
+                "200":
+                    description: A list of all sponsors
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Sponsor"
+
+    /admin_api/sponsor/{sponsor_id}:
+        put:
+            summary: Update a sponsor by ID
+            operationId: updateSponsorById
+            parameters:
+                - name: sponsor_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SponsorInput"
+            responses:
+                "200":
+                    description: Sponsor updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Sponsor"
+
+    /admin_api/influencers:
+        get:
+            summary: Get list of all influencers
+            operationId: getAllInfluencers
+            responses:
+                "200":
+                    description: A list of all influencers
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Influencer"
+
+    /admin_api/influencer/{influencer_id}:
+        put:
+            summary: Update an influencer by ID
+            operationId: updateInfluencerById
+            parameters:
+                - name: influencer_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/InfluencerInput"
+            responses:
+                "200":
+                    description: Influencer updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Influencer"
+
+    /admin_api/campaigns:
+        get:
+            summary: Get list of all campaigns
+            operationId: getAllCampaigns
+            responses:
+                "200":
+                    description: A list of all campaigns
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Campaign"
+
+    /admin_api/campaign/{campaign_id}:
+        put:
+            summary: Update a campaign by ID
+            operationId: updateCampaignById
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/CampaignInput"
+            responses:
+                "200":
+                    description: Campaign updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Campaign"
+
+    /admin_api/campaign/{campaign_id}/ads:
+        get:
+            summary: Get list of ad requests for a campaign
+            operationId: getAdRequestsForCampaign
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: A list of ad requests
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/AdRequest"
+
+    /admin_api/campaign/{campaign_id}/ad/{ad_id}:
+        put:
+            summary: Update an ad request by campaign ID and ad ID
+            operationId: updateAdRequestByCampaignIdAndAdId
+            parameters:
+                - name: campaign_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+                - name: ad_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AdRequestInput"
+            responses:
+                "200":
+                    description: Ad request updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AdRequest"
+
+    /admin_api/admins:
+        get:
+            summary: Get list of all admins
+            operationId: getAllAdmins
+            responses:
+                "200":
+                    description: A list of all admins
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Admin"
+
+        post:
+            summary: Create a new admin
+            operationId: createAdmin
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AdminInput"
+            responses:
+                "201":
+                    description: Admin created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Admin"
+
+    /admin_api/admin/{admin_id}:
+        get:
+            summary: Get an admin by ID
+            operationId: getAdminById
+            parameters:
+                - name: admin_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Admin data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Admin"
+
+        put:
+            summary: Update an admin by ID
+            operationId: updateAdminById
+            parameters:
+                - name: admin_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AdminInput"
+            responses:
+                "200":
+                    description: Admin updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Admin"
+
+        delete:
+            summary: Delete an admin by ID
+            operationId: deleteAdminById
+            parameters:
+                - name: admin_id
+                  in: path
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "204":
+                    description: Admin deleted
+
+    /admin_api/statistics:
+        get:
+            summary: Get statistics
+            operationId: getStatistics
+            responses:
+                "200":
+                    description: Statistics data
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Statistics"
+
+components:
+    schemas:
+        Influencer:
+            type: object
+            properties:
+                Influencer_ID:
+                    type: integer
+                Username:
+                    type: string
+                Full_Name:
+                    type: string
+                Country_Code:
+                    type: integer
+                Phone:
+                    type: integer
+                Niche:
+                    type: string
+                Reach:
+                    type: integer
+                Platform:
+                    type: object
+                    properties:
+                        Youtube:
+                            type: boolean
+                        Twitter:
+                            type: boolean
+                        Instagram:
+                            type: boolean
+                        Others:
+                            type: boolean
+                Bio:
+                    type: string
+
+        InfluencerInput:
+            type: object
+            properties:
+                Username:
+                    type: string
+                Password:
+                    type: string
+                Full_Name:
+                    type: string
+                Country_Code:
+                    type: integer
+                Phone:
+                    type: integer
+                Niche:
+                    type: string
+                Reach:
+                    type: integer
+                Platform:
+                    type: object
+                    properties:
+                        Youtube:
+                            type: boolean
+                        Twitter:
+                            type: boolean
+                        Instagram:
+                            type: boolean
+                        Others:
+                            type: boolean
+                Bio:
+                    type: string
+
+        Sponsor:
+            type: object
+            properties:
+                Sponsor_ID:
+                    type: integer
+                Username:
+                    type: string
+                Full_Name:
+                    type: string
+                Country_Code:
+                    type: string
+                Phone:
+                    type: string
+                Company:
+                    type: string
+                Industry:
+                    type: string
+
+        SponsorInput:
+            type: object
+            properties:
+                Username:
+                    type: string
+                Password:
+                    type: string
+                Full_Name:
+                    type: string
+                Country_Code:
+                    type: string
+                Phone:
+                    type: string
+                Company:
+                    type: string
+                Industry:
+                    type: string
+
+        Campaign:
+            type: object
+            properties:
+                Campaign_ID:
+                    type: integer
+                Name:
+                    type: string
+                Sponsor_ID:
+                    type: integer
+                Description:
+                    type: string
+                Start_Date:
+                    type: string
+                    format: date
+                End_Date:
+                    type: string
+                    format: date
+                Budget:
+                    type: number
+
+        CampaignInput:
+            type: object
+            properties:
+                Name:
+                    type: string
+                Sponsor_ID:
+                    type: integer
+                Description:
+                    type: string
+                Start_Date:
+                    type: string
+                    format: date
+                End_Date:
+                    type: string
+                    format: date
+                Budget:
+                    type: number
+
+        AdRequest:
+            type: object
+            properties:
+                Ad_ID:
+                    type: integer
+                Campaign_ID:
+                    type: integer
+                Name:
+                    type: string
+                Influencer_ID:
+                    type: integer
+                Messages:
+                    type: string
+                Requirements:
+                    type: string
+                Payment_Amount:
+                    type: number
+                Status:
+                    type: string
+
+        AdRequestInput:
+            type: object
+            properties:
+                Influencer_ID:
+                    type: integer
+                Messages:
+                    type: string
+                Requirements:
+                    type: string
+                Payment_Amount:
+                    type: number
+
+        AdPerformance:
+            type: object
+            properties:
+                Ad_ID:
+                    type: integer
+                Reach:
+                    type: integer
+                Posts:
+                    type: integer
+                Likes:
+                    type: integer
+                Rating:
+                    type: integer
+
+        AdRequestWithCampaign:
+            type: object
+            properties:
+                Ad_ID:
+                    type: integer
+                Campaign_ID:
+                    type: integer
+                Name:
+                    type: string
+                Influencer_ID:
+                    type: integer
+                Messages:
+                    type: string
+                Requirements:
+                    type: string
+                Payment_Amount:
+                    type: number
+                Status:
+                    type: string
+                Campaign_Name:
+                    type: string
+                Sponsor_ID:
+                    type: integer
+                Description:
+                    type: string
+                Start_Date:
+                    type: string
+                    format: date
+                End_Date:
+                    type: string
+                    format: date
+                Budget:
+                    type: number
+
+        Admin:
+            type: object
+            properties:
+                Admin_ID:
+                    type: integer
+                Username:
+                    type: string
+                Full_Name:
+                    type: string
+                Email:
+                    type: string
+                Position:
+                    type: string
+
+        AdminInput:
+            type: object
+            properties:
+                Username:
+                    type: string
+                Password:
+                    type: string
+                Full_Name:
+                    type: string
+                Email:
+                    type: string
+                Position:
+                    type: string
+
+        Statistics:
+            type: object
+            properties:
+                totalInfluencers:
+                    type: integer
+                flaggedInfluencers:
+                    type: integer
+                totalSponsors:
+                    type: integer
+                flaggedSponsors:
+                    type: integer
+                totalCampaigns:
+                    type: integer
+                flaggedCampaigns:
+                    type: integer
+                flaggedAds:
+                    type: integer

@@ -22,6 +22,8 @@ new Vue({
                 .get(`/api/influencer_api/influencer/${this.id}`)
                 .then((response) => {
                     this.username = response.data["Username"];
+                    this.averageRating = response.data["Rating"];
+                    this.totalEarnings = response.data["Earnings"];
                     this.loading = false;
                 })
                 .catch((error) => {

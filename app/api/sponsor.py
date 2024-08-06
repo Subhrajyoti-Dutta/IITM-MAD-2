@@ -8,6 +8,7 @@ sponsor_blueprint = Blueprint('sponsors', __name__)
 api = Api(sponsor_blueprint)
 
 def abort_if_sponsor_doesnt_exist(sponsor_id):
+    print(sponsor_id)
     sponsor = Sponsor.query.get(sponsor_id)
     if not sponsor:
         abort(404, message=f"Sponsor {sponsor_id} doesn't exist")
@@ -15,13 +16,16 @@ def abort_if_sponsor_doesnt_exist(sponsor_id):
 class SponsorListAPI(Resource):
     def get(self):
         sponsors = Sponsor.query.all()
-        return [sponsor.to_dict() for sponsor in sponsors]
+        return [sponsor._to_dict() for sponsor in sponsors]
 
 class SponsorAPI(Resource):
     def get(self, sponsor_id):
         abort_if_sponsor_doesnt_exist(sponsor_id)
+        camps = Campaign.query.filter_by(sponsor_id=sponsor_id).all()
+        budget = sum([camp.budget for camp in camps])
+        # budgets = mapcamps
         sponsor = Sponsor.query.get(sponsor_id)
-        return sponsor.to_dict()
+        return {**sponsor._to_dict(), "Budget": budget}
 
     def post(self):
         data = request.get_json()
@@ -80,8 +84,18 @@ class SponsorAPI(Resource):
 class SponAdAPI(Resource):
     def get(self, sponsor_id, status="all"):
         if status == "all":
-            ad_requests = db.session.query(AdRequest, Campaign).join(Campaign).filter(Campaign.sponsor_id==sponsor_id).all()
-            return jsonify([{**ad.to_dict(), **camp.to_dict()} for (ad, camp) in ad_requests])
+            campaigns = Campaign.query.filter_by(sponsor_id=sponsor_id).all()
+            ad_requests = list()
+            for campaign in campaigns:
+                ad = campaign._to_dict()
+                ad["Ads"] = [ad._to_dict() for ad in AdRequest.query.filter_by(campaign_id = campaign.campaign_id).all()]
+                ad_requests.append(ad)
+            return jsonify(ad_requests)
         else:
-            ad_requests = db.session.query(AdRequest, Campaign).join(Campaign).filter(Campaign.sponsor_id==sponsor_id).filter(AdRequest.status==status.capitalize()).all()
-            return jsonify([{**ad.to_dict(), **camp.to_dict()} for (ad, camp) in ad_requests])
+            campaigns = Campaign.query.filter_by(sponsor_id=sponsor_id).all()
+            ad_requests = list()
+            for campaign in campaigns:
+                ad = campaign._to_dict()
+                ad["Ads"] = [ad._to_dict() for ad in AdRequest.query.filter_by(campaign_id = campaign.campaign_id, status=status).all()]
+                ad_requests.append(ad)
+            return jsonify(ad_requests)

@@ -103,21 +103,25 @@
                                 <strong>Rating:</strong> ${ averageRating }
                             </p>
                             <p class="text-white">
-                                <strong>Earnings:</strong> $${
-                                totalEarnings.toFixed(2) }
+                                <strong>Earnings:</strong> $${ totalEarnings }
                             </p>
                         </div>
                     </div>
                     <div class="col-9">
-                        <h3>Active Campaigns</h3>
+                        <h3>Active Ads</h3>
                         <ul class="list-group mb-3">
                             <li
                                 v-for="campaign in activeCampaigns"
                                 :key="campaign.id"
                                 class="list-group-item d-flex justify-content-between align-items-center"
+                                :class="{'bg-danger':campaign.Flag}"
                             >
-                                <span class="text-black"
-                                    >${ campaign.Name }</span
+                                <span class="text-black">
+                                    <a class="tt text-black"
+                                        >${campaign.Ad_ID.toString().padStart(10,
+                                        '0')}</a
+                                    >
+                                    ${ campaign.Name }: ${campaign.Topic}</span
                                 >
                                 <button
                                     class="btn btn-primary"
@@ -127,17 +131,24 @@
                                 </button>
                             </li>
                         </ul>
-                        <h3>New Campaigns</h3>
-                        <ul class="list-group">
+                        <h3>New Ads</h3>
+                        <ul class="list-group mb-3">
                             <li
                                 v-for="campaign in newCampaigns"
                                 :key="campaign.Campaign_ID"
                                 class="list-group-item d-flex justify-content-between align-items-center"
+                                :class="{'bg-danger':campaign.Flag}"
                             >
-                                <span>${ campaign.Name }</span>
+                                <span class="text-black">
+                                    <a class="tt text-black"
+                                        >${campaign.Ad_ID.toString().padStart(10,
+                                        '0')}</a
+                                    >
+                                    ${ campaign.Name }</span
+                                >
                                 <div>
                                     <button
-                                        class="btn btn-info mr-2"
+                                        class="btn btn-primary mr-2"
                                         @click="viewCampaign(campaign)"
                                     >
                                         View
@@ -173,7 +184,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5
-                                class="modal-title modal-text"
+                                class="modal-title text-black"
                                 id="campaignModalLabel"
                             >
                                 <strong>${ modalCampaign.Name }</strong>
@@ -183,33 +194,33 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="mb-2 modal-text">
+                                    <div class="mb-2 text-black">
                                         <b>Campaign ID:</b>
                                         ${modalCampaign.Campaign_ID}
                                     </div>
-                                    <div class="mb-2 modal-text">
+                                    <div class="mb-2 text-black">
                                         <b>Sponsor ID:</b>
                                         ${modalCampaign.Sponsor_ID}
                                     </div>
-                                    <div class="mb-2 modal-text">
+                                    <div class="mb-2 text-black">
                                         <b>Description:</b>
                                         ${modalCampaign.Description}
                                     </div>
-                                    <div class="mb-2 modal-text">
+                                    <div class="mb-2 text-black">
                                         <b>Messages:</b>
                                         ${modalCampaign.Messages}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="mb-2 modal-text">
+                                    <div class="mb-2 text-black">
                                         <b>Requirements:</b>
                                         ${modalCampaign.Requirements}
                                     </div>
-                                    <div class="mb-2 modal-text">
+                                    <div class="mb-2 text-black">
                                         <b>Payment Amount:</b>
                                         ${modalCampaign.Payment_Amount}
                                     </div>
-                                    <div class="mb-2 modal-text">
+                                    <div class="mb-2 text-black">
                                         <b>Dates:</b>
                                         ${modalCampaign.Start_Date} to
                                         ${modalCampaign.End_Date}
@@ -228,6 +239,7 @@
                                     v-if="modalCampaign.Status === 'Null'"
                                     @click="acceptCampaign(modalCampaign.Campaign_ID,modalCampaign.Ad_ID)"
                                     class="btn btn-success"
+                                    data-dismiss="modal"
                                 >
                                     Accept
                                 </button>
@@ -235,6 +247,7 @@
                                     v-if="modalCampaign.Status === 'Null'"
                                     @click="rejectCampaign(modalCampaign.Campaign_ID,modalCampaign.Ad_ID)"
                                     class="btn btn-danger"
+                                    data-dismiss="modal"
                                 >
                                     Reject
                                 </button>

@@ -108,15 +108,18 @@
                         </div>
                     </div>
                     <div class="col-9">
-                        <h3 class="text-white">Active Campaigns</h3>
+                        <h3 class="text-white">Active Ads</h3>
                         <ul class="list-group mb-3">
                             <li
                                 v-for="campaign in activeCampaigns"
-                                :key="campaign.id"
                                 class="list-group-item d-flex justify-content-between align-items-center"
+                                :class="{'bg-danger':campaign.Flag}"
                             >
                                 <span class="text-black"
-                                    >${ campaign.Name }</span
+                                    ><a class="tt text-black"
+                                        >${campaign.Ad_ID.toString().padStart(10,
+                                        '0')} </a
+                                    >${ campaign.Topic }</span
                                 >
                                 <button
                                     class="btn btn-primary"
@@ -126,24 +129,26 @@
                                 </button>
                             </li>
                         </ul>
-                        <h3>Pending Campaigns</h3>
-                        <ul class="list-group">
+                        <h3>Pending Ads</h3>
+                        <ul class="list-group mb-3">
                             <li
                                 v-for="campaign in pendingCampaigns"
-                                :key="campaign.Campaign_ID"
                                 class="list-group-item d-flex justify-content-between align-items-center"
+                                :class="{'bg-danger':campaign.Flag}"
                             >
-                                <span>${ campaign.Name }</span>
+                                <span class="text-black"
+                                    >${ campaign.Topic }</span
+                                >
                                 <div>
                                     <button
-                                        class="btn btn-info mr-2"
+                                        class="btn btn-primary mr-2"
                                         @click="viewCampaign(campaign)"
                                     >
                                         View
                                     </button>
                                     <button
                                         class="btn btn-danger"
-                                        @click="deleteCampaign(campaign.Campaign_ID)"
+                                        @click="deleteCampaign(campaign.Campaign_ID, campaign.Ad_ID)"
                                     >
                                         Delete
                                     </button>
@@ -166,47 +171,47 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5
-                                class="modal-title modal-text"
+                                class="modal-title text-black"
                                 id="campaignModalLabel"
                             >
-                                <strong>${ modalCampaign.Name }</strong>
+                                <strong>${ modalCampaign.Topic }</strong>
                                 <small>${ modalCampaign.Ad_ID }</small>
                             </h5>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="mb-2 modal-text">
+                                    <div class="mb-2 text-black">
                                         <b>Campaign ID:</b>
                                         ${modalCampaign.Campaign_ID}
                                     </div>
-                                    <div class="mb-2 modal-text">
+                                    <div class="mb-2 text-black">
                                         <b>Sponsor ID:</b>
-                                        ${modalCampaign.Sponsor_ID}
+                                        ${modalCampaign.Influencer_ID}
                                     </div>
-                                    <div class="mb-2 modal-text">
+                                    <!-- <div class="mb-2 text-black">
                                         <b>Description:</b>
                                         ${modalCampaign.Description}
-                                    </div>
-                                    <div class="mb-2 modal-text">
+                                    </div> -->
+                                    <div class="mb-2 text-black">
                                         <b>Messages:</b>
                                         ${modalCampaign.Messages}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="mb-2 modal-text">
+                                    <div class="mb-2 text-black">
                                         <b>Requirements:</b>
                                         ${modalCampaign.Requirements}
                                     </div>
-                                    <div class="mb-2 modal-text">
+                                    <div class="mb-2 text-black">
                                         <b>Payment Amount:</b>
                                         ${modalCampaign.Payment_Amount}
                                     </div>
-                                    <div class="mb-2 modal-text">
+                                    <!-- <div class="mb-2 text-black">
                                         <b>Dates:</b>
                                         ${modalCampaign.Start_Date} to
                                         ${modalCampaign.End_Date}
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                             <div class="modal-footer pb-0 pr-0">

@@ -25,6 +25,8 @@ new Vue({
                 .get(`/api/influencer_api/influencer/${this.id}`)
                 .then((response) => {
                     this.username = response.data["Username"];
+                    this.averageRating = response.data["Rating"];
+                    this.totalEarnings = response.data["Earnings"];
                     this.loading = false;
                 })
                 .catch((error) => {
@@ -46,8 +48,10 @@ new Vue({
             axios
                 .get(`/api/influencer_api/influencer/${this.id}/campaigns`)
                 .then((response) => {
+                    response.data.map((campaign) => {});
                     this.campaigns = response.data;
                     this.filteredCampaigns = response.data;
+                    console.log(this.filteredCampaigns);
                 })
                 .catch((error) => {
                     console.error("Error fetching campaigns:", error);

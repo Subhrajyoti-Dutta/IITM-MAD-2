@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Influencer Dashboard</title>
+        <title>Admin Dashboard</title>
         <link
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
             rel="stylesheet"
@@ -14,13 +14,13 @@
         />
         <link
             rel="stylesheet"
-            href="{{ url_for('static', filename='css/influencer/sponsors.css') }}"
+            href="{{ url_for('static', filename='css/admin/influencers.css') }}"
         />
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">INFLUENCER DASHBOARD</a>
+                <a class="navbar-brand" href="#">ADMIN DASHBOARD</a>
                 <button
                     class="navbar-toggler"
                     type="button"
@@ -37,42 +37,42 @@
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="{{ url_for('influencer.dashboard') }}"
+                                href="{{ url_for('admin.dashboard')}}"
                                 >HOME</a
                             >
                         </li>
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="{{ url_for('influencer.profile') }}"
-                                >PROFILE</a
+                                href="{{ url_for('admin.influencers')}}"
+                                >INFLUENCERS</a
                             >
                         </li>
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="{{ url_for('influencer.sponsors') }}"
+                                href="{{ url_for('admin.sponsors')}}"
                                 >SPONSORS</a
                             >
                         </li>
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="{{ url_for('influencer.find_campaign') }}"
+                                href="{{ url_for('admin.campaigns')}}"
                                 >CAMPAIGNS</a
                             >
                         </li>
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="{{ url_for('influencer.stats') }}"
-                                >STATS</a
+                                href="{{ url_for('admin.admins')}}"
+                                >ADMINS</a
                             >
                         </li>
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="{{ url_for('auth.logout') }}"
+                                href="{{ url_for('auth.logout')}}"
                                 >LOGOUT</a
                             >
                         </li>
@@ -93,33 +93,36 @@
                             />
                         </div>
                         <div>
-                            <p><strong>ID:</strong> ${ id }</p>
-                            <p><strong>Username:</strong> ${ username }</p>
-                            <p><strong>Rating:</strong> ${ averageRating }</p>
-                            <p>
-                                <strong>Earnings:</strong> $${ totalEarnings }
+                            <p class="text-white">
+                                <strong>ID:</strong> ${ id }
+                            </p>
+                            <p class="text-white">
+                                <strong>Username:</strong> ${ username }
+                            </p>
+                            <p class="text-white">
+                                <strong>Position:</strong> ${ position }
                             </p>
                         </div>
                     </div>
                     <div class="col-9">
-                        <h3>Sponsors</h3>
+                        <h3 class="text-white">Influencers</h3>
                         <ul class="list-group mb-3">
                             <li
                                 class="list-group-item d-flex justify-content-between align-items-center text-black"
-                                v-for="sponsor in sponsors"
-                                :key="sponsor.Sponsor_ID"
-                                :class="{'bg-danger':sponsor.Flag}"
+                                v-for="influencer in influencers"
+                                :key="influencer.Influencer_ID"
+                                :class="{'bg-danger':influencer.Flag}"
                             >
                                 <div>
                                     <a class="tt text-black"
-                                        >${sponsor.Sponsor_ID.toString().padStart(10,
+                                        >${influencer.Influencer_ID.toString().padStart(10,
                                         '0')}</a
                                     >
-                                    ${ sponsor.Full_Name }
+                                    ${ influencer.Full_Name }
                                 </div>
                                 <button
                                     class="btn btn-primary"
-                                    @click="viewSponsor(sponsor)"
+                                    @click="viewInfluencer(influencer)"
                                 >
                                     View
                                 </button>
@@ -128,13 +131,13 @@
                     </div>
                 </div>
             </div>
-            <!-- Sponsor Modal -->
+            <!-- Influencer Modal -->
             <div
                 class="modal fade"
-                id="sponsorModal"
+                id="influencerModal"
                 tabindex="-1"
                 role="dialog"
-                aria-labelledby="sponsorModalLabel"
+                aria-labelledby="influencerModalLabel"
                 aria-hidden="true"
             >
                 <div class="modal-dialog" role="document">
@@ -142,9 +145,9 @@
                         <div class="modal-header">
                             <h5
                                 class="modal-title text-black"
-                                id="sponsorModalLabel"
+                                id="influencerModalLabel"
                             >
-                                ${ modalSponsor.Full_Name }
+                                ${ modalInfluencer.Full_Name }
                             </h5>
                             <button
                                 type="button"
@@ -157,41 +160,64 @@
                         </div>
                         <div class="modal-body">
                             <p class="text-black">
-                                <strong>Sponsor ID:</strong> ${
-                                modalSponsor.Sponsor_ID }
+                                <strong>Influencer ID:</strong> ${
+                                modalInfluencer.Influencer_ID }
                             </p>
                             <p class="text-black">
                                 <strong>Username:</strong> ${
-                                modalSponsor.Username }
+                                modalInfluencer.Username }
                             </p>
                             <p class="text-black">
                                 <strong>Full Name:</strong> ${
-                                modalSponsor.Full_Name }
+                                modalInfluencer.Full_Name }
                             </p>
                             <p class="text-black">
                                 <strong>Country Code:</strong> ${
-                                modalSponsor.Country_Code }
+                                modalInfluencer.Country_Code }
                             </p>
                             <p class="text-black">
-                                <strong>Phone:</strong> ${ modalSponsor.Phone }
+                                <strong>Phone:</strong> ${ modalInfluencer.Phone
+                                }
                             </p>
                             <p class="text-black">
-                                <strong>Company:</strong> ${
-                                modalSponsor.Company }
+                                <strong>Niche:</strong> ${ modalInfluencer.Niche
+                                }
                             </p>
                             <p class="text-black">
-                                <strong>Industry:</strong> ${
-                                modalSponsor.Industry }
+                                <strong>Reach:</strong> ${ modalInfluencer.Reach
+                                }
                             </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button
-                                type="button"
-                                class="btn btn-secondary"
-                                data-dismiss="modal"
-                            >
-                                Close
-                            </button>
+                            <p class="text-black">
+                                <strong>Flagged:</strong> ${
+                                modalInfluencer.Flag }
+                            </p>
+                            <div class="modal-footer pb-0 pr-0">
+                                <button
+                                    v-if="modalInfluencer.Flag"
+                                    type="button"
+                                    class="btn btn-success"
+                                    data-dismiss="modal"
+                                    @click="deflagInfluencer(modalInfluencer.Influencer_ID)"
+                                >
+                                    Deflag
+                                </button>
+                                <button
+                                    v-if="!modalInfluencer.Flag"
+                                    type="button"
+                                    class="btn btn-danger"
+                                    data-dismiss="modal"
+                                    @click="flagInfluencer(modalInfluencer.Influencer_ID)"
+                                >
+                                    Flag
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-dismiss="modal"
+                                >
+                                    Close
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -202,6 +228,6 @@
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
-        <script src="{{ url_for('static', filename='js/influencer/sponsors.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/admin/influencers.js') }}"></script>
     </body>
 </html>

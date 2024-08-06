@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Admin Dashboard</title>
+        <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/admin/campaigns.css') }}"
+        />
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">ADMIN DASHBOARD</a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('admin.dashboard')}}"
+                                >HOME</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('admin.influencers')}}"
+                                >INFLUENCERS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('admin.sponsors')}}"
+                                >SPONSORS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('admin.campaigns')}}"
+                                >CAMPAIGNS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('admin.admins')}}"
+                                >ADMINS</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ url_for('auth.logout')}}"
+                                >LOGOUT</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="app" class="container mt-5">
+            <div v-if="loading" class="text-center">Loading...</div>
+            <div v-if="!loading">
+                <div class="row">
+                    <div class="col-3">
+                        <div>
+                            <img
+                                src="{{ url_for('static', filename='img/path_to_profile_picture.webp') }}"
+                                alt="Profile Picture"
+                                class="img-fluid rounded-circle mb-3"
+                            />
+                        </div>
+                        <div>
+                            <p class="text-white">
+                                <strong>ID:</strong> ${ id }
+                            </p>
+                            <p class="text-white">
+                                <strong>Username:</strong> ${ username }
+                            </p>
+                            <p class="text-white">
+                                <strong>Position:</strong> ${ position }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="mb-3 input-group">
+                            <input
+                                type="text"
+                                v-model="searchQuery"
+                                class="form-control"
+                                placeholder="Search campaigns by name"
+                            />
+                            <div class="input-group-append">
+                                <button
+                                    class="btn btn-success"
+                                    @click="filterCampaigns"
+                                >
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <select
+                                    v-model="selectedInfluencer"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                >
+                                    <option value="">All Influencers</option>
+                                    <option
+                                        v-for="influencer in influencers"
+                                        :key="influencer.Influencer_ID"
+                                        :value="influencer.Influencer_ID"
+                                    >
+                                        ${ influencer.Full_Name }
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <select
+                                    v-model="selectedStatus"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                >
+                                    <option value="All">All Statuses</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Rejected">Rejected</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Null">Null</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <input
+                                    type="date"
+                                    v-model="startDate"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                />
+                            </div>
+                            <div class="col">
+                                <input
+                                    type="date"
+                                    v-model="endDate"
+                                    class="form-control"
+                                    @change="filterCampaigns"
+                                />
+                            </div>
+                        </div>
+                        <div
+                            v-for="campaign in filteredCampaigns"
+                            :key="campaign.id"
+                            class="card mb-3"
+                        >
+                            <div
+                                class="card-body d-flex"
+                                :class="{'bg-danger':campaign.Flag}"
+                            >
+                                <div class="col-md-12 pl-0 pr-0">
+                                    <div
+                                        class="d-flex justify-content-between align-items-center"
+                                    >
+                                        <div>
+                                            <h5 class="card-title">
+                                                <b>${ campaign.Name }</b>
+                                            </h5>
+                                            <p class="card-text">
+                                                <b>Description: </b>${
+                                                campaign.Description }
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <button
+                                                class="btn btn-primary mr-1"
+                                                @click="viewCampaign(campaign)"
+                                            >
+                                                View
+                                            </button>
+                                            <button
+                                                v-if="!campaign.Expand"
+                                                class="btn btn-success"
+                                                @click="expandCampaign(campaign)"
+                                            >
+                                                Expand
+                                            </button>
+                                            <button
+                                                v-if="campaign.Expand"
+                                                class="btn btn-success"
+                                                @click="collapseCampaign(campaign)"
+                                            >
+                                                Collapse
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <ul
+                                        v-if="campaign.Expand"
+                                        class="list-group pt-3"
+                                    >
+                                        <!-- <a>${campaign}</a> -->
+                                        <li
+                                            v-for="ad in campaign.Ads"
+                                            :key="ad.Ad_ID"
+                                            class="list-group-item d-flex justify-content-between align-items-center"
+                                            :class="{'bg-danger':campaign.Flag || ad.Flag}"
+                                        >
+                                            <div>
+                                                <div>
+                                                    <span class="text-black"
+                                                        ><strong>Topic: </strong
+                                                        >${ ad.Topic }</span
+                                                    >
+                                                </div>
+                                                <div>
+                                                    <span class="text-black"
+                                                        ><strong
+                                                            >Influencer ID: </strong
+                                                        >${ ad.Influencer_ID
+                                                        }</span
+                                                    >
+                                                </div>
+                                                <div>
+                                                    <span class="text-black"
+                                                        ><strong
+                                                            >Status: </strong
+                                                        >${ ad.Status }</span
+                                                    >
+                                                </div>
+                                            </div>
+                                            <button
+                                                class="btn btn-primary"
+                                                @click="viewAd(campaign,ad)"
+                                            >
+                                                View
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Campaign Modal -->
+            <div
+                class="modal fade"
+                id="campaignModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="campaignModalLabel"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5
+                                class="modal-title text-black"
+                                id="campaignModalLabel"
+                            >
+                                <strong>${ modalCampaign.Name }</strong>
+                            </h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-md-12">
+                                <div class="mb-2 text-black">
+                                    <b>Campaign ID:</b>
+                                    <span> ${modalCampaign.Campaign_ID} </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Sponsor ID:</b>
+                                    <span> ${modalCampaign.Sponsor_ID} </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Description:</b>
+                                    <span> ${modalCampaign.Description} </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Budget:</b>
+                                    <span> ${modalCampaign.Budget} </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Dates:</b>
+                                    <span>
+                                        ${modalCampaign.Start_Date} to
+                                        ${modalCampaign.End_Date}
+                                    </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Flagged:</b>
+                                    <span> ${modalCampaign.Flag} </span>
+                                </div>
+                            </div>
+                            <div class="modal-footer pb-0 pr-0">
+                                <button
+                                    v-if="modalCampaign.Flag"
+                                    type="button"
+                                    class="btn btn-success"
+                                    data-dismiss="modal"
+                                    @click="deflagCampaign(modalCampaign.Campaign_ID)"
+                                >
+                                    Deflag
+                                </button>
+                                <button
+                                    v-if="!modalCampaign.Flag"
+                                    type="button"
+                                    class="btn btn-danger"
+                                    data-dismiss="modal"
+                                    @click="flagCampaign(modalCampaign.Campaign_ID)"
+                                >
+                                    Flag
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-dismiss="modal"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Ad Modal -->
+            <div
+                class="modal fade"
+                id="adModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="adModalLabel"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5
+                                class="modal-title text-black"
+                                id="adModalLabel"
+                            >
+                                <strong>${ modalAd.Topic }</strong>
+                            </h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-md-12">
+                                <div class="mb-2 text-black">
+                                    <b>Ad ID:</b>
+                                    <span> ${modalAd.Ad_ID} </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Campaign ID:</b>
+                                    <span> ${modalAd.Campaign_ID} </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Influencer ID:</b>
+                                    <span> ${modalAd.Influencer_ID} </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Messages:</b>
+                                    <span> ${modalAd.Messages} </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Requirements:</b>
+                                    <span> ${modalAd.Requirements} </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Payment Amount:</b>
+                                    <span> ${modalAd.Payment_Amount} </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Status:</b>
+                                    <span> ${modalAd.Status} </span>
+                                </div>
+                                <div class="mb-2 text-black">
+                                    <b>Flagged:</b>
+                                    <span> ${modalAd.Flag} </span>
+                                </div>
+                            </div>
+                            <div class="modal-footer pb-0 pr-0">
+                                <button
+                                    v-if="modalAd.Flag"
+                                    type="button"
+                                    class="btn btn-success"
+                                    data-dismiss="modal"
+                                    @click="deflagAd(modalAd.Campaign_ID,modalAd.Ad_ID)"
+                                >
+                                    Deflag
+                                </button>
+                                <button
+                                    v-if="!modalAd.Flag"
+                                    type="button"
+                                    class="btn btn-danger"
+                                    data-dismiss="modal"
+                                    @click="flagAd(modalAd.Campaign_ID,modalAd.Ad_ID)"
+                                >
+                                    Flag
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-dismiss="modal"
+                                    @click="closeAd"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+        <script src="{{ url_for('static', filename='js/admin/campaigns.js') }}"></script>
+    </body>
+</html>

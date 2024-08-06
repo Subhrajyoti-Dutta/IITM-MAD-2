@@ -93,23 +93,35 @@
                             />
                         </div>
                         <div>
-                            <p><strong>ID:</strong> ${ id }</p>
-                            <p><strong>Username:</strong> ${ username }</p>
-                            <p><strong>Company:</strong> ${ company }</p>
-                            <p>
+                            <p class="text-white">
+                                <strong>ID:</strong> ${ id }
+                            </p>
+                            <p class="text-white">
+                                <strong>Username:</strong> ${ username }
+                            </p>
+                            <p class="text-white">
+                                <strong>Company:</strong> ${ company }
+                            </p>
+                            <p class="text-white">
                                 <strong>Budget:</strong> $${ budget.toFixed(2) }
                             </p>
                         </div>
                     </div>
                     <div class="col-9">
                         <h3>Influencers</h3>
-                        <ul class="list-group">
+                        <ul class="list-group mb-3">
                             <li
-                                class="list-group-item d-flex justify-content-between align-items-center modal-text"
+                                class="list-group-item d-flex justify-content-between align-items-center text-black"
                                 v-for="influencer in influencers"
                                 :key="influencer.Influencer_ID"
+                                :class="{'bg-danger':influencer.Flag}"
                             >
-                                ${ influencer.Full_Name }
+                                <div>
+                                    <a class="tt text-black"
+                                        >${influencer.Influencer_ID.toString().padStart(10,
+                                        '0')} </a
+                                    >${ influencer.Full_Name }
+                                </div>
                                 <button
                                     class="btn btn-primary"
                                     @click="viewInfluencer(influencer)"
@@ -130,11 +142,11 @@
                 aria-labelledby="influencerModalLabel"
                 aria-hidden="true"
             >
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5
-                                class="modal-title modal-text"
+                                class="modal-title text-black"
                                 id="influencerModalLabel"
                             >
                                 ${ modalInfluencer.Full_Name }
@@ -149,30 +161,78 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p class="modal-text">
-                                <strong>Username:</strong> ${
-                                modalInfluencer.Username }
-                            </p>
-                            <p class="modal-text">
-                                <strong>Full Name:</strong> ${
-                                modalInfluencer.Full_Name }
-                            </p>
-                            <p class="modal-text">
-                                <strong>Phone Number:</strong> +${
-                                modalInfluencer.Country_Code } ${
-                                modalInfluencer.Phone }
-                            </p>
-                            <p class="modal-text">
-                                <strong>Niche:</strong> ${ modalInfluencer.Niche
-                                }
-                            </p>
-                            <p class="modal-text">
-                                <strong>Reach:</strong> ${ modalInfluencer.Reach
-                                }
-                            </p>
-                            <p class="modal-text">
-                                <strong>Bio:</strong> ${ modalInfluencer.Bio }
-                            </p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="text-black">
+                                        <strong>Username:</strong> ${
+                                        modalInfluencer.Username }
+                                    </p>
+                                    <p class="text-black">
+                                        <strong>Full Name:</strong> ${
+                                        modalInfluencer.Full_Name }
+                                    </p>
+                                    <p class="text-black">
+                                        <strong>Phone Number:</strong> +${
+                                        modalInfluencer.Country_Code } ${
+                                        modalInfluencer.Phone }
+                                    </p>
+                                    <p class="text-black">
+                                        <strong>Platform Presence:</strong>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="text-black">
+                                        <strong>Niche:</strong> ${
+                                        modalInfluencer.Niche }
+                                    </p>
+                                    <p class="text-black">
+                                        <strong>Reach:</strong> ${
+                                        modalInfluencer.Reach }
+                                    </p>
+                                    <p class="text-black">
+                                        <strong>Bio:</strong> ${
+                                        modalInfluencer.Bio }
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <button
+                                        type="button"
+                                        class="btn w-100"
+                                        :class="{'btn-danger': modalInfluencer.Platform.Youtube, 'btn-outline-danger': !modalInfluencer.Platform.Youtube}"
+                                    >
+                                        YouTube
+                                    </button>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <button
+                                        type="button"
+                                        class="btn w-100"
+                                        :class="{'btn-primary': modalInfluencer.Platform.Twitter, 'btn-outline-primary': !modalInfluencer.Platform.Twitter}"
+                                    >
+                                        Twitter
+                                    </button>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <button
+                                        type="button"
+                                        class="btn w-100"
+                                        :class="{'btn-warning': modalInfluencer.Platform.Instagram, 'btn-outline-warning': !modalInfluencer.Platform.Instagram}"
+                                    >
+                                        Instagram
+                                    </button>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <button
+                                        type="button"
+                                        class="btn w-100"
+                                        :class="{'btn-secondary': modalInfluencer.Platform.Others, 'btn-outline-secondary': !modalInfluencer.Platform.Others}"
+                                    >
+                                        Others
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button
