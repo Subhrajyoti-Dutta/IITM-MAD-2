@@ -43,8 +43,7 @@ The Influencer Management System provides functionalities for managing influence
 --------config.py
 --------data.py
 --------models.py
---------\_forms.py
---------**init**.py
+--------__init__.py
 --------api/
 ------------admin.py
 ------------adperformance.py
@@ -52,7 +51,7 @@ The Influencer Management System provides functionalities for managing influence
 ------------campaign.py
 ------------influencer.py
 ------------sponsor.py
-------------**init**.py
+------------__init__.py
 --------static/
 ------------css/
 ----------------index.css
@@ -133,7 +132,7 @@ The Influencer Management System provides functionalities for managing influence
 ------------auth.py
 ------------influencer.py
 ------------sponsor.py
-------------**init**.py
+------------__init__.py
 ----docs/
 --------api.yaml
 ----instance/
